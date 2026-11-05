@@ -1,0 +1,1720 @@
+# SUTIDEO SUNG — COMPLETE VINYL PORTFOLIO SYSTEM
+## THREEUI SOURCE INTEGRATION + 3D VINYL EXPERIENCE + PROJECT CMS
+
+### MASTER IMPLEMENTATION PROMPT
+
+You are working on an existing web application.
+
+Build a premium, minimalist, cinematic portfolio website for **SUTIDEO SUNG**, a visual production studio specializing in photography, videography, commercial films, product content, motion graphics, and AI visual production.
+
+The signature experience of this website is an interactive 3D vinyl record collection.
+
+The original ThreeUI CompleteShelfLandingPage must be used as the verified technical foundation.
+
+Transform the original bookshelf and seven books into a collection of realistic vinyl records with album sleeves.
+
+Each vinyl represents one individual portfolio project.
+
+Visitors must be able to select an LP and navigate to its own dedicated project detail page.
+
+The administrator must be able to manage up to 15 LP records, upload artwork from a local PC, edit project pages, upload videos and photographs, reorder content blocks, and edit image captions.
+
+This is a complete portfolio website and private content management system, not a static visual demonstration.
+
+---
+
+# PART A — SOURCE MATERIAL AND IMPLEMENTATION RULES
+
+## 01. REQUIRED SOURCE ATTACHMENT
+
+Use the attached source file:
+
+`붙여넣은 텍스트(1).txt`
+
+The file contains three important sections:
+
+1. USAGE
+2. CODE
+3. SKILL.MD
+
+Treat the supplied source material as the primary technical reference.
+
+Read the complete attachment before implementation.
+
+Do not rely on shortened excerpts, screenshots, or visual descriptions.
+
+Extract and understand the complete original HTML, CSS, JavaScript, Three.js scene, interaction logic, data definitions, lifecycle, and responsive behavior.
+
+If the attachment is not available in the development environment, request or retrieve the original source before editing.
+
+Do not invent missing implementation details.
+
+## 02. ORIGINAL COMPONENT INFORMATION
+
+Component:
+
+`CompleteShelfLandingPage`
+
+Package:
+
+`@designcodeio/threeui`
+
+Runtime:
+
+Full HTML + DOM/CSS + Three.js r165
+
+Source revision:
+
+`SHA-256 606f200fed86`
+
+Official reference:
+
+https://threeui.com/landing-pages/complete-shelf-v2.html
+
+Original source bundle:
+
+https://threeui.com/source-code/complete-shelf-landing-page.json
+
+Required files:
+
+**1. Component**
+
+`src/shaders/landing-pages/LandingPages.tsx`
+
+SHA-256:
+
+`4d379461ad00eb4de7900df312878035383de7e1ed4e13283b8143a2eea9d30a`
+
+**2. Frame component**
+
+`src/shaders/landing-pages/LandingPageFrame.tsx`
+
+SHA-256:
+
+`61de2cc50888aac4ac5557420b07fa47ed3543bb57c1e0055fafdefa53dbaa78`
+
+**3. Original HTML**
+
+`public/landing-pages/complete-shelf-v2.html`
+
+SHA-256:
+
+`606f200fed8602c243f40a11c8c364f0e625c57f80e7c97dc76419da207f198e`
+
+**4. Shared stylesheet**
+
+`src/shaders/threeui.css`
+
+SHA-256:
+
+`efe4447139f1358dd8e9be68edf6fa46cbefbd1de423a4d6c439ca61d2c8eccf`
+
+## 03. ORIGINAL USAGE — PRESERVE AS THE REFERENCE
+
+The original configured component usage is:
+
+```tsx
+import { CompleteShelfLandingPage } from "@designcodeio/threeui";
+import "@designcodeio/threeui/style.css";
+
+export function Scene() {
+  return (
+    <div className="shader-frame">
+      <CompleteShelfLandingPage
+        headingFont="iowan-old-style"
+        bodyFont="inter"
+        headingWeight="400"
+        bodyWeight="400"
+        primaryColor="#c87046"
+        headingSize={60}
+        bodySize={12}
+        headingLetterSpacing={-0.055}
+      />
+    </div>
+  );
+}
+```
+
+Preserve this original usage as the package reference.
+
+Do not invent additional props.
+
+The original component must be inspected before changing its integration method.
+
+## 04. SKILL.MD — REQUIRED HOST ARCHITECTURE
+
+Follow the attached `add-complete-shelf-landing-page` SKILL.md.
+
+Its technical requirements are important.
+
+Original implementation technology:
+
+- React iframe host.
+- Complete authored HTML document.
+- Same-project local source URL.
+- Three.js r165.
+- Embedded original media.
+
+Follow this implementation architecture:
+
+1. Read the original `LandingPages.tsx`.
+2. Read the original `LandingPageFrame.tsx`.
+3. Copy the complete original HTML byte-for-byte.
+4. Place the original HTML at `/landing-pages/complete-shelf-v2.html`.
+5. Preserve its embedded assets and source code.
+6. Use a full-size iframe host for the complete HTML.
+7. Load only the React host bundle lazily.
+8. Do not import the entire HTML document into the React JavaScript module graph.
+9. Give the iframe a properly sized, overflow-controlled parent.
+10. Preserve the required iframe permissions for scripts, same-origin resources, forms, modals, and supported browser interactions.
+11. Verify cleanup and rendering lifecycle.
+
+Use the original local host pattern:
+
+```tsx
+import { LandingPageFrame } from "./LandingPageFrame";
+
+export function Scene() {
+  return (
+    <div className="effect-frame">
+      <LandingPageFrame
+        title="SUTIDEO SUNG Vinyl Portfolio"
+        sourceUrl="/landing-pages/sutideo-vinyl-portfolio.html"
+      />
+    </div>
+  );
+}
+```
+
+The exact frame props and iframe configuration must be checked against the actual supplied `LandingPageFrame.tsx` source.
+
+Do not guess its implementation.
+
+## 05. SOURCE PRESERVATION AND CUSTOMIZATION STRATEGY
+
+THIS IS CRITICAL.
+
+Maintain two separate HTML files.
+
+ORIGINAL SOURCE — IMMUTABLE
+
+`public/landing-pages/complete-shelf-v2.html`
+
+- Copy the complete original HTML byte-for-byte.
+- Preserve the original source revision.
+- Preserve the original embedded media.
+- Preserve its complete styling, scripts, shaders, controls, and interactions.
+- Do not rebrand or modify this canonical source file.
+- Keep its hash available for regression verification.
+
+SUTIDEO CUSTOM VERSION
+
+`public/landing-pages/sutideo-vinyl-portfolio.html`
+
+Create this file as a custom derivative of the verified original.
+
+Use the complete original document as the starting point.
+
+Make only the intentional modifications required for the SUTIDEO SUNG vinyl portfolio.
+
+The original file must remain untouched.
+
+The customized file may replace:
+- Book-specific objects.
+- Book textures.
+- Book data.
+- Book-specific page interactions.
+- Book-related UI labels.
+- Static seven-book fallback.
+- Book-specific navigation.
+
+It must preserve and adapt:
+- Three.js r165 runtime.
+- Original rendering architecture.
+- Camera architecture.
+- Scene lifecycle.
+- Lighting and material quality.
+- Animation loop.
+- Responsive system.
+- Pointer detection.
+- Selection movement.
+- Keyboard navigation.
+- Wheel navigation.
+- OrbitControls.
+- Reduced-motion behavior.
+- WebGL context-loss handling.
+- Static fallback behavior.
+- Renderer and resource disposal.
+
+Do not recreate the entire effect from a screenshot.
+
+Do not replace the original renderer with a generic carousel.
+
+The customized HTML should be traceable to the original source.
+
+Keep a record of intentional changes.
+
+Because the customized LP version is a derivative, do not claim that its file hash is identical to the original hash.
+
+---
+
+# PART B — BRAND AND WEBSITE DESIGN
+
+## 06. BRAND IDENTITY
+
+Brand name:
+
+SUTIDEO SUNG
+
+Tagline:
+
+영상과 사진으로, 장면의 가치를 기록합니다.
+
+Brand characteristics:
+
+- Minimalist.
+- Premium.
+- Cinematic.
+- Artistic.
+- Editorial.
+- Sophisticated.
+
+Primary language: Korean.
+
+Use English for selected section labels and project metadata.
+
+## 07. VISUAL DESIGN SYSTEM
+
+Use a luxurious but restrained minimalist palette.
+
+Primary background:
+
+`#F7F6F2`
+
+Secondary background:
+
+`#EEEDE8`
+
+Primary text:
+
+`#191919`
+
+Secondary text:
+
+`#777777`
+
+Accent:
+
+`#A52B25`
+
+Subtle border:
+
+`#DDDAD3`
+
+Typography:
+
+- Pretendard for Korean.
+- Inter for supporting text.
+- Elegant serif typography for selected editorial titles.
+
+The original copper accent may remain as a restrained material detail, but do not let it dominate the brand identity.
+
+IMPORTANT:
+
+The original source contains per-book color palettes and automatic theme changes.
+
+Replace these with a consistent SUTIDEO SUNG global palette.
+
+Different LP cover artworks may have their own colors, but the website background and typography should remain consistent.
+
+Avoid:
+- Excessive gradients.
+- Glassmorphism.
+- Excessive rounded cards.
+- Colorful UI decorations.
+- Generic startup layouts.
+- Unnecessary animations.
+
+Photography, videos, and vinyl artwork must dominate.
+
+---
+
+# PART C — LP RECORD 3D SCENE
+
+## 08. MAIN CONCEPT
+
+Completely transform the original Working Volumes bookshelf into an interactive LP record exhibition.
+
+The original seven books must be replaced by portfolio vinyl records.
+
+The main scene must show a curated collection of LP album sleeves with realistic vinyl discs partially protruding from each sleeve.
+
+The purpose is not music playback.
+
+The vinyl is a three-dimensional representation of each portfolio project.
+
+Do not create:
+- Book objects.
+- Book spines.
+- Pages.
+- Page-turning animations.
+- Book-reading interactions.
+- Shopping cart functions.
+- Music purchasing functionality.
+
+Create an artistic portfolio exhibition.
+
+## 09. LP ALBUM SLEEVE MODEL
+
+Each project must have one square album sleeve.
+
+The front of the album sleeve must display the corresponding project's thumbnail/banner image.
+
+Use the actual image uploaded by the administrator.
+
+ALBUM COVER REQUIREMENTS
+
+- Square LP sleeve.
+- Realistic paperboard thickness.
+- Matte printed surface.
+- Subtle physical edge details.
+- Premium printing appearance.
+- Correct image mapping.
+- No image distortion.
+
+The original project thumbnail should normally be a horizontal 16:9 image.
+
+Generate an appropriate square cover crop for the LP sleeve.
+
+The administrator must be able to adjust:
+- Image crop.
+- Image focal point.
+- Horizontal positioning.
+- Vertical positioning.
+
+Do not stretch the original image.
+
+Do not overwrite the original 16:9 portfolio thumbnail when generating a square LP cover.
+
+The album cover should be replaceable independently when necessary.
+
+## 10. VINYL RECORD MODEL
+
+Place a realistic black LP record partially inside each album sleeve.
+
+VISUAL COMPOSITION
+
+- Approximately 45–55% of the LP disc diameter should remain visible outside its sleeve.
+- The remaining part of the LP must appear inserted inside the sleeve.
+- Default extraction direction: right side.
+- Keep the record physically aligned with the sleeve.
+- Avoid floating disconnected discs.
+
+LP RECORD MATERIALS
+
+Use a dark charcoal or near-black vinyl material.
+
+Include:
+- Fine concentric grooves.
+- Subtle reflective rings.
+- Realistic center spindle hole.
+- Circular center label.
+- Controlled surface highlights.
+- Appropriate disc thickness.
+- Natural shadows.
+
+Use efficient Three.js geometry and textures.
+
+Avoid excessive separate geometry objects for each groove if a radial material or texture can achieve the same appearance.
+
+The LP should look like a genuine physical record under studio lighting.
+
+## 11. LP CENTER LABEL
+
+Create a small circular center label on every LP.
+
+Display:
+- Short project title.
+- Project number.
+- Minimal SUTIDEO SUNG branding.
+
+Use refined typography.
+
+Keep the center label simple and elegant.
+
+Do not overcrowd the record.
+
+## 12. VINYL ANIMATION
+
+Maintain the original Three.js animation system.
+
+Use subtle, controlled movement.
+
+Desired behavior:
+- LP sleeves gently float or shift in their display positions.
+- Vinyl discs can rotate slowly around their centers.
+- Selected LP becomes visually prominent.
+- Hover produces a restrained depth or lift response.
+- Moving between projects feels smooth.
+- Selection transitions preserve a premium visual rhythm.
+
+Do not make the records spin rapidly.
+
+Do not use excessive bouncing.
+
+The original camera and lighting quality should remain recognizable.
+
+## 13. DISPLAY ARRANGEMENT
+
+Use the original bookshelf scene as a structural reference.
+
+Adapt the horizontal shelf into a refined vinyl display ledge or exhibition platform.
+
+Keep the display visually minimal.
+
+Use:
+- Warm ivory surroundings.
+- A slim display platform.
+- Restrained walnut or charcoal details.
+- Soft realistic shadows.
+- Studio-style lighting.
+
+For up to 15 records, do not force all 15 objects to occupy the center of the viewport at once.
+
+Use a continuous navigable collection.
+
+Suggested visibility:
+- Desktop: approximately 5–7 records visible around the selected center record.
+- Tablet: approximately 3–5 visible.
+- Mobile: one primary record with partial previews of neighboring records.
+
+Scale the camera, spacing, and shelf layout according to the number of registered projects.
+
+No object should be clipped off-screen unexpectedly.
+
+---
+
+# PART D — DYNAMIC PORTFOLIO DATA
+
+## 14. REPLACE THE ORIGINAL BOOK DATA
+
+The original source uses:
+
+`const BOOKS = [...]`
+
+It contains seven hardcoded book records.
+
+Replace the original book data architecture with:
+
+`const PROJECTS = [...]`
+
+The new project data must come from persistent backend records.
+
+Do not keep the original seven sample tool names or descriptions.
+
+The collection must support a maximum of 15 projects.
+
+MAXIMUM:
+
+15 projects total.
+
+The number of displayed LP records must depend on actual registered projects.
+
+Examples:
+
+- 1 project = 1 LP.
+- 3 projects = 3 LPs.
+- 6 projects = 6 LPs.
+- 10 projects = 10 LPs.
+- 15 projects = 15 LPs.
+
+Do not automatically generate duplicate records.
+
+Do not display fake projects to fill unused positions.
+
+When no projects have been published, show a tasteful empty-state design.
+
+When a project is unpublished, it must not appear to public visitors.
+
+## 15. PROJECT DATA STRUCTURE
+
+Every project should contain:
+
+- id.
+- slug.
+- title.
+- category.
+- year.
+- shortDescription.
+- introduction.
+- thumbnailUrl.
+- lpCoverUrl.
+- lpCoverPosition.
+- centerLabelText.
+- mainVideoUrl.
+- posterUrl.
+- additionalMedia.
+- displayOrder.
+- isPublished.
+- createdAt.
+- updatedAt.
+
+Every LP must reference exactly one project ID.
+
+The LP cover, selected project metadata, and project detail page must all use the same project record.
+
+Do not create disconnected duplicate data.
+
+## 16. ORIGINAL SOURCE DATA TO REPLACE
+
+Inspect and update these specific source areas:
+
+1. `BOOKS` array.
+2. `COVER_ATLAS_DATA`.
+3. `COVER_CROPS`.
+4. `coverAtlasImage`.
+5. `makeCoverTexture`.
+6. `createBookRig`.
+7. `bookRigs`.
+8. `buildMarkers`.
+9. `updateSelection`.
+10. `setHovered`.
+11. `bookIndexAtPointer`.
+12. `onCanvasClick`.
+13. `openDetail`.
+14. Book-specific page and reading controls.
+15. Static fallback books.
+
+Do not mechanically rename functions without inspecting their actual behavior.
+
+Refactor the book-specific code into a suitable LP architecture.
+
+Suggested names:
+
+- PROJECTS.
+- vinylRigs.
+- createVinylRig.
+- createAlbumSleeve.
+- createVinylDisc.
+- loadProjectCoverTexture.
+- updateProjectSelection.
+- projectIndexAtPointer.
+- openProjectRoute.
+
+Keep the original source file unchanged.
+
+## 17. DYNAMIC COVER IMAGE LOADING
+
+The original source uses a single seven-cover WebP atlas.
+
+It uses seven 512 × 768 image crops.
+
+This fixed system cannot directly represent up to 15 independently uploaded project covers.
+
+Replace the fixed seven-cover requirement in the custom derivative with dynamic image loading.
+
+Use each project's uploaded LP artwork.
+
+Requirements:
+
+- Load cover images from configured project-owned storage URLs.
+- Maintain CORS-compatible image loading.
+- Preserve color space and texture orientation.
+- Use appropriate image filtering.
+- Limit anisotropy according to device capability.
+- Lazy-load offscreen or distant LP textures.
+- Cache loaded textures.
+- Release replaced textures when appropriate.
+- Handle failed image loads.
+- Provide a project-specific placeholder cover if an image is unavailable.
+
+Do not use the original ThreeUI storage bucket for user uploads.
+
+Use the owner's own storage project.
+
+Do not assume the old fixed atlas supports the new images.
+
+---
+
+# PART E — LP NAVIGATION AND PROJECT ROUTING
+
+## 18. CLICKING AN LP MUST OPEN ITS PROJECT
+
+THIS IS A MANDATORY FEATURE.
+
+When a visitor clicks an LP disc:
+
+1. Identify the LP's project ID.
+2. Retrieve its project slug.
+3. Navigate to its dedicated project detail URL.
+4. Load the matching project content.
+
+Example routes:
+
+`/projects/project-01`
+
+`/projects/project-02`
+
+`/projects/project-03`
+
+Continue for all registered projects up to project 15.
+
+Both the LP record and the album sleeve may act as clickable targets.
+
+The selected LP must open its own corresponding project page.
+
+Do not open the original book detail overlay.
+
+Do not open an internal page-turning viewer.
+
+Do not send all LP records to the same project page.
+
+## 19. CLICK AND DRAG SEPARATION
+
+Preserve the original pointer-based interaction.
+
+A user dragging or browsing the collection must not accidentally open a project.
+
+Implement gesture detection:
+
+- Small pointer movement = click.
+- Significant pointer movement = drag.
+- Touch swipe = navigation.
+- Valid record selection = project navigation.
+
+Use a clear click threshold.
+
+Support keyboard selection.
+
+Support mouse, touch, and accessible focus states.
+
+## 20. IFRAME TO REACT NAVIGATION BRIDGE
+
+The original Complete Shelf document runs inside a full-document iframe.
+
+The LP collection must therefore communicate with the parent React website.
+
+Use a controlled `postMessage` bridge.
+
+CHILD IFRAME → PARENT WEBSITE
+
+When an LP is clicked, send a message similar to:
+
+```js
+window.parent.postMessage(
+  {
+    type: "SUTIDEO_OPEN_PROJECT",
+    slug: selectedProject.slug
+  },
+  window.location.origin
+);
+```
+
+PARENT WEBSITE
+
+The React host must:
+
+1. Listen for the message.
+2. Verify the message origin.
+3. Validate the message structure.
+4. Verify that the slug exists.
+5. Verify that the project is published.
+6. Navigate to the correct project route.
+
+Do not accept arbitrary route strings from the iframe.
+
+Use an allowlisted project lookup.
+
+INITIALIZATION BRIDGE
+
+When the iframe loads, it should send:
+
+`SUTIDEO_VINYL_READY`
+
+The parent application can then respond with the currently published project data.
+
+When administrator changes are saved, update the iframe collection with a new validated data payload.
+
+Use the bridge to synchronize:
+- Project titles.
+- Cover images.
+- Project ordering.
+- Publication visibility.
+- Project availability.
+
+Do not expose administrator credentials, session secrets, or private database data to the iframe.
+
+Validate every incoming and outgoing message.
+
+---
+
+# PART F — PROJECT DETAIL ONE-PAGE WEBSITE
+
+## 21. INDIVIDUAL PROJECT ROUTES
+
+Each LP must open a separate project page.
+
+The project page is a complete vertically scrollable one-page experience.
+
+Do not use a small popup in place of the page.
+
+Every project needs:
+
+- Unique project ID.
+- Unique slug.
+- Unique route.
+- Unique featured image.
+- Unique main video.
+- Unique text.
+- Unique additional media.
+
+## 22. PROJECT DETAIL LAYOUT
+
+### A. HEADER
+
+Display:
+
+SUTIDEO SUNG
+
+BACK TO PORTFOLIO
+
+Project number.
+
+Project title.
+
+Category.
+
+Year.
+
+### B. MAIN FEATURED VIDEO
+
+The main video must be the first major media element.
+
+Use a large horizontal 16:9 player.
+
+Features:
+
+- Play.
+- Pause.
+- Volume.
+- Mute.
+- Playback timeline.
+- Fullscreen.
+- Current time.
+- Video poster.
+
+Support:
+- MP4.
+- WebM.
+- YouTube.
+- Vimeo.
+
+Do not autoplay with sound.
+
+If no video has been uploaded, display the featured project image.
+
+### C. PROJECT INTRODUCTION
+
+Provide:
+- Project introduction.
+- Creative direction.
+- Project background.
+- Short description.
+
+### D. BLOG-STYLE CONTENT
+
+Below the main video, create a rich editorial storytelling section.
+
+The administrator must be able to add:
+
+1. Heading.
+2. Paragraph.
+3. Large photograph.
+4. Image with caption.
+5. Full-width video.
+6. Video with description.
+7. Image gallery.
+8. Two-column image block.
+9. Quote.
+10. Divider.
+
+The visitor should experience the page like a premium visual magazine.
+
+Allow text, videos, and photographs to appear in any sequence.
+
+Support long-form Korean and English text.
+
+Maintain beautiful typography and generous whitespace.
+
+### E. PROJECT END
+
+At the bottom:
+
+- Previous Project.
+- Next Project.
+- Three related projects.
+- Back to Portfolio.
+
+All links must reference valid project records.
+
+---
+
+# PART G — PRIVATE ADMINISTRATOR CMS
+
+## 23. DISCREET LOGIN
+
+Add a very small ADMIN button to the website header.
+
+The login interface must remain hidden until the administrator clicks the button.
+
+Do not show a large login form on the homepage.
+
+Create a minimal login modal.
+
+Fields:
+
+- Email.
+- Password.
+- Login button.
+
+ADMINISTRATOR EMAIL:
+
+`admin@sutideosung.com`
+
+The password must be configured privately through deployment environment secrets.
+
+Do not put the previously shared password in frontend code or this source file.
+
+Use a new private password before production.
+
+PASSWORD DISPLAY:
+
+Use `type="password"`.
+
+Mask entered characters using dots or asterisks.
+
+Never show the actual password in plain text.
+
+SECURITY:
+
+- Server-side authentication.
+- Argon2id or bcrypt password hashing.
+- Secure HttpOnly cookies.
+- SameSite protection.
+- HTTPS.
+- Session expiration.
+- Login rate limiting.
+- Protected API routes.
+- Server-side authorization.
+- Secure logout.
+- No public registration.
+
+Do not rely on hidden buttons as the only protection.
+
+## 24. ADMIN DASHBOARD
+
+Create an administrator-only dashboard.
+
+Navigation:
+
+1. Dashboard.
+2. Portfolio Management.
+3. LP Collection Management.
+4. Album Cover Editor.
+5. Project Detail Editor.
+6. Media Library.
+7. Showreel Management.
+8. Website Settings.
+9. Account Settings.
+10. Logout.
+
+The dashboard must be easy to use without source-code editing.
+
+## 25. PORTFOLIO MANAGEMENT
+
+Allow the administrator to:
+
+- Create projects.
+- Edit projects.
+- Delete projects.
+- Add up to 15 projects.
+- Change project titles.
+- Change category.
+- Change year.
+- Edit descriptions.
+- Upload thumbnail images.
+- Set LP cover artwork.
+- Set main videos.
+- Publish.
+- Unpublish.
+- Save drafts.
+- Change project order.
+
+Enforce the 15-project maximum on the server as well as in the interface.
+
+Count draft projects toward the limit so the total registered collection cannot exceed 15.
+
+When the maximum is reached, disable the add-project action and show an understandable message.
+
+## 26. LP COVER ARTWORK EDITOR
+
+This is a core administrator feature.
+
+For every project, allow the administrator to:
+
+- Upload a new LP cover image.
+- Select an existing project thumbnail.
+- Replace the cover image.
+- Preview the square LP sleeve.
+- Adjust crop position.
+- Adjust focal point.
+- Preview the actual 3D LP.
+- Edit center label text.
+- Save artwork changes.
+
+Use the project thumbnail/banner as the default LP cover artwork.
+
+When the project's thumbnail changes, offer the option to update its LP cover.
+
+Do not silently overwrite a manually customized LP cover.
+
+The updated artwork must appear in the actual 3D scene after saving.
+
+## 27. PC FILE UPLOAD
+
+Allow the administrator to choose files directly from their local computer.
+
+Buttons:
+
+SELECT FILES
+
+DRAG AND DROP FILES HERE
+
+Support:
+
+Images:
+- JPG.
+- JPEG.
+- PNG.
+- WebP.
+
+Videos:
+- MP4.
+- WebM.
+
+Allow multiple file selection.
+
+Show:
+- Upload progress.
+- Preview.
+- File name.
+- File type.
+- File size.
+- Upload status.
+- Replace action.
+- Delete action.
+
+Implement real browser file selection and persistent backend uploads.
+
+Validate file size, MIME type, actual file signature, and authorization on the server.
+
+Use chunked or resumable uploads for larger video files where supported.
+
+Do not store uploaded media only in localStorage or browser memory.
+
+## 28. PROJECT DETAIL EDITOR
+
+The administrator must be able to completely modify each project page.
+
+Provide block insertion controls:
+
++ ADD HEADING
+
++ ADD PARAGRAPH
+
++ ADD IMAGE
+
++ ADD VIDEO
+
++ ADD IMAGE GALLERY
+
++ ADD TWO-COLUMN IMAGES
+
++ ADD QUOTE
+
++ ADD DIVIDER
+
+Allow:
+- Editing.
+- Deleting.
+- Replacing.
+- Previewing.
+- Saving.
+- Publishing.
+
+No manual HTML or React code editing should be necessary.
+
+## 29. DRAG-AND-DROP CONTENT ORDER
+
+Implement real drag-and-drop block ordering.
+
+The administrator must be able to move:
+
+- Headings.
+- Paragraphs.
+- Images.
+- Videos.
+- Image galleries.
+- Two-column image groups.
+- Quotes.
+- Dividers.
+
+All block types must be reorderable together.
+
+Each item must have:
+
+- Drag handle.
+- Preview.
+- Sequence number.
+- Edit.
+- Delete.
+
+After reordering:
+1. Update the sequence.
+2. Save the sequence in the database.
+3. Refresh the public project page.
+4. Preserve the same order after a browser refresh.
+
+## 30. INLINE IMAGE CAPTION EDITING
+
+Every project image must support an independent caption.
+
+In admin mode:
+
+Click an image caption to edit it inline.
+
+Provide:
+- Text editor.
+- Save.
+- Cancel.
+- Alt text field.
+- Allow empty captions.
+
+Save all changes to the backend.
+
+Public visitors must only see the finished image and caption.
+
+They must never see editing controls.
+
+## 31. SHOWREEL MANAGEMENT
+
+Allow the administrator to:
+
+- Upload a showreel.
+- Replace the showreel.
+- Upload a poster.
+- Enter a supported external video URL.
+- Preview.
+- Publish.
+- Unpublish.
+
+The public website must display only the configured showreel.
+
+If no showreel exists, do not show fake playback functionality.
+
+---
+
+# PART H — DATABASE AND BACKEND
+
+## 32. PERSISTENT DATA ARCHITECTURE
+
+Do not create a frontend-only demonstration.
+
+Use a persistent backend and object storage.
+
+Recommended architecture:
+
+- PostgreSQL or Supabase Database.
+- Supabase Storage or equivalent object storage.
+- Secure authentication.
+- Protected server APIs.
+- Role-based permissions.
+
+Use the owner's own storage bucket, not the original ThreeUI public media bucket.
+
+## 33. DATABASE SCHEMA
+
+PROJECTS
+
+- id.
+- slug.
+- title.
+- category.
+- year.
+- short_description.
+- introduction.
+- thumbnail_url.
+- lp_cover_url.
+- lp_cover_position.
+- center_label_text.
+- main_video_url.
+- poster_url.
+- display_order.
+- is_lp_visible.
+- is_published.
+- created_at.
+- updated_at.
+
+PROJECT_MEDIA
+
+- id.
+- project_id.
+- media_type.
+- file_url.
+- poster_url.
+- caption.
+- alt_text.
+- sort_order.
+- created_at.
+- updated_at.
+
+PROJECT_CONTENT_BLOCKS
+
+- id.
+- project_id.
+- block_type.
+- text_content.
+- media_url.
+- poster_url.
+- caption.
+- alt_text.
+- sort_order.
+- created_at.
+- updated_at.
+
+SHOWREEL
+
+- id.
+- video_url.
+- poster_url.
+- is_published.
+
+SITE_SETTINGS
+
+- brand_name.
+- tagline.
+- philosophy.
+- contact_email.
+- instagram_url.
+- location.
+- footer_text.
+
+Use proper foreign keys, unique slugs, indexes, and authorization policies.
+
+Enforce a maximum of 15 registered projects through server-side validation and transactional checks.
+
+Ensure every LP uses a valid published project record.
+
+All captions, content blocks, media URLs, and sequence numbers must persist.
+
+Draft projects must remain private.
+
+Visitors can access only published project content and approved media.
+
+---
+
+# PART I — COMPLETE WEBSITE DESIGN
+
+## 34. HOMEPAGE STRUCTURE
+
+Create a complete SUTIDEO SUNG website.
+
+Main sections:
+
+1. Hero.
+2. Interactive LP Collection.
+3. Philosophy.
+4. Contact.
+5. Footer.
+
+HERO
+
+Brand:
+
+SUTIDEO SUNG
+
+Tagline:
+
+영상과 사진으로, 장면의 가치를 기록합니다.
+
+The brand identity must be visible without overwhelming the 3D scene.
+
+LP COLLECTION
+
+The 3D vinyl collection is the main portfolio section.
+
+Use the original CompleteShelf source as the foundation.
+
+Do not add an unrelated generic carousel.
+
+PHILOSOPHY
+
+Heading:
+
+OUR PHILOSOPHY
+
+Text:
+
+좋은 콘텐츠는 화려한 기술보다 정확한 시선에서 시작됩니다.
+
+기획부터 촬영, 편집, 모션그래픽과 AI 비주얼까지,
+브랜드가 전하고 싶은 이야기를 하나의 장면으로 설계합니다.
+
+CONTACT
+
+Heading:
+
+LET'S CREATE SOMETHING.
+
+Supporting text:
+
+새로운 프로젝트와 협업에 열려 있습니다.
+
+Display editable:
+- Email.
+- Instagram.
+- Location.
+
+Do not invent actual contact details.
+
+FOOTER
+
+SUTIDEO SUNG
+
+© ALL RIGHTS RESERVED.
+
+The public page must remain simple and visual.
+
+The LP collection replaces the need for a redundant second portfolio catalog containing duplicate project entries.
+
+---
+
+# PART J — RESPONSIVE DESIGN
+
+## 35. DESKTOP
+
+- Large immersive LP collection.
+- Up to 5–7 visible records in the scene.
+- Prominent selected LP.
+- Full 3D depth and realistic lighting.
+- Large cinematic project video.
+- Editorial project story.
+- Full administrator dashboard.
+
+## 36. TABLET
+
+- Responsive LP collection.
+- Reduced record spacing.
+- Touch-friendly selection.
+- Optimized project pages.
+- Two-column content arrangements where appropriate.
+
+## 37. MOBILE
+
+- One primary LP at a time.
+- Partial previews of neighboring records.
+- Touch-friendly horizontal swipe.
+- Tap to open projects.
+- Responsive project videos.
+- Readable blog-style project story.
+- Mobile-friendly login and content editor.
+
+Do not simply shrink the desktop design.
+
+Recalculate camera framing and object layout for the mobile viewport.
+
+Prevent clipping and horizontal overflow.
+
+---
+
+# PART K — SOURCE-SPECIFIC TECHNICAL REQUIREMENTS
+
+## 38. THREE.JS IMPORTS AND RUNTIME
+
+The provided source uses:
+
+- Three.js r165.
+- OrbitControls.
+- RoomEnvironment.
+- RoundedBoxGeometry.
+- RectAreaLightUniformsLib.
+
+Preserve the original import map and runtime dependency versions.
+
+Do not upgrade or substitute Three.js without verifying compatibility.
+
+Keep the original environment and rendering quality as the foundation.
+
+## 39. SOURCE FUNCTIONS TO INSPECT
+
+Before editing, inspect the complete behavior of:
+
+- `createBookRig`.
+- `makeCoverTexture`.
+- `makeFoilTexture`.
+- `makeSpineTexture`.
+- `makeBackCoverTexture`.
+- `addRoom`.
+- `addLights`.
+- `buildMarkers`.
+- `updateSelection`.
+- `updateShelfLayout`.
+- `bookIndexAtPointer`.
+- `onCanvasClick`.
+- `openDetail`.
+- `closeDetail`.
+- `setReadingOpen`.
+- `turnPage`.
+- `resize`.
+- `requestFrame`.
+- `handleContextLost`.
+- `disposeExperience`.
+
+Replace book-specific implementation only where necessary.
+
+Convert:
+
+`createBookRig`
+
+into an LP-specific rig builder such as:
+
+`createVinylRig`
+
+The LP rig must include:
+
+1. Album sleeve.
+2. Front cover artwork.
+3. Rear sleeve.
+4. Black vinyl disc.
+5. Concentric groove treatment.
+6. Center label.
+7. Shadows.
+8. Hover and selection hit targets.
+
+The original page geometry and page-turning functionality are no longer needed.
+
+Do not keep empty book pages hidden inside the new LP implementation.
+
+## 40. REPLACE BOOK INTERACTIONS WITH PROJECT NAVIGATION
+
+The old source has:
+- Internal detail panel.
+- Open book action.
+- Page-turn controls.
+- Reading state.
+- Book-specific detail controls.
+
+Remove these book-only interactions from the custom LP variant.
+
+Replace them with:
+
+- Selected LP metadata.
+- Previous and next LP selection.
+- Collection index markers.
+- VIEW PROJECT action.
+- Direct project routing through the parent React host.
+
+A valid record click must open the full project page.
+
+Do not replace this with the original small detail panel.
+
+## 41. STATIC FALLBACK
+
+The original source includes a seven-book static fallback.
+
+Replace it with a dynamic project fallback.
+
+If WebGL is unavailable or context is lost:
+
+- Display the registered LP cover images.
+- Use a responsive static collection.
+- Keep every published LP clickable.
+- Preserve project navigation.
+- Display project titles.
+- Maintain the SUTIDEO SUNG visual identity.
+
+Do not display the seven original tool names.
+
+The fallback must support up to 15 projects.
+
+---
+
+# PART L — GOOGLE STITCH AND DEVELOPMENT HANDOFF
+
+## 42. DESIGN MODE — GOOGLE STITCH
+
+When running in Google Stitch or another design-only environment:
+
+Create the high-fidelity responsive design and clickable prototype.
+
+The design must include:
+
+1. Desktop homepage.
+2. Mobile homepage.
+3. Tablet layout.
+4. Interactive vinyl collection appearance.
+5. Selected LP state.
+6. LP hover state.
+7. Project detail page.
+8. Main video player.
+9. Blog-style content page.
+10. Admin login modal.
+11. Admin dashboard.
+12. Portfolio management.
+13. LP artwork editor.
+14. PC media upload interface.
+15. Content block editor.
+16. Drag-and-drop sorting state.
+17. Inline caption editing.
+18. Showreel management.
+
+Create prototype links:
+
+LP click → Corresponding Project Detail.
+
+Back to Portfolio → Homepage.
+
+Admin button → Login Modal.
+
+Admin Login → Dashboard prototype.
+
+Dashboard → Project Editor.
+
+Project Editor → Media Upload.
+
+Project Editor → Content Ordering.
+
+Do not claim actual Three.js rendering, database saving, authentication, or persistent uploads inside a design-only prototype.
+
+Prepare the full code-development handoff.
+
+## 43. DEVELOPMENT MODE — GOOGLE ANTIGRAVITY OR CODE-CAPABLE ENVIRONMENT
+
+When running in a code-capable environment:
+
+Implement the actual HTML, Three.js, React host, routing, database, authentication, and storage.
+
+Use the supplied original HTML and SKILL.md as the authoritative source.
+
+Preserve the original source file byte-for-byte.
+
+Create a separate custom vinyl HTML derivative.
+
+Do not import the complete HTML into the React JavaScript bundle.
+
+Use the local iframe host pattern.
+
+Use the custom local source URL:
+
+`/landing-pages/sutideo-vinyl-portfolio.html`
+
+Ensure that the iframe and parent website use a safe, validated message bridge.
+
+---
+
+# PART M — PERFORMANCE, ACCESSIBILITY AND SECURITY
+
+## 44. PERFORMANCE
+
+- Lazy-load the host component.
+- Optimize uploaded image derivatives.
+- Use WebP where appropriate.
+- Load only necessary LP textures.
+- Dispose replaced textures.
+- Limit rendering pixel ratio according to device performance.
+- Respect reduced-motion settings.
+- Avoid unnecessary continuous rendering when the scene is idle.
+- Pause rendering when the page is hidden where possible.
+- Use the original requestAnimationFrame lifecycle.
+- Release all unused GPU resources.
+
+## 45. ACCESSIBILITY
+
+Support:
+- Keyboard navigation.
+- Focus indicators.
+- Accessible project titles.
+- Alt text.
+- Proper labels.
+- Reduced-motion preferences.
+- Touch interactions.
+- Video controls.
+
+The website must remain usable without a mouse.
+
+## 46. SECURITY
+
+Do not expose:
+- Passwords.
+- API secret keys.
+- Database service-role keys.
+- Authentication tokens.
+- Storage private credentials.
+
+Use server-side permission validation for all mutations.
+
+Validate all uploaded files.
+
+Validate incoming iframe messages.
+
+Restrict external embeds to supported and trusted providers.
+
+Ensure public visitors cannot modify projects by calling APIs directly.
+
+---
+
+# PART N — FINAL TESTING AND VERIFICATION
+
+## 47. LP COLLECTION TESTING
+
+Verify:
+
+1. Original source successfully retrieved.
+2. Original HTML copied byte-for-byte.
+3. Original hash retained.
+4. Custom HTML derivative created.
+5. Original seven books are no longer displayed in the custom version.
+6. Realistic LP sleeves are visible.
+7. LP records are partially protruding.
+8. Project banner images appear on the sleeves.
+9. LPs move naturally.
+10. The collection supports up to 15 projects.
+11. Empty project slots are not filled with duplicates.
+12. The selected LP is clearly identifiable.
+
+## 48. NAVIGATION TESTING
+
+Verify:
+
+1. Clicking an LP opens the correct project page.
+2. Clicking a sleeve also opens the same project.
+3. Dragging does not trigger project navigation.
+4. Every project has the correct unique URL.
+5. Previous and next project navigation works.
+6. Back to Portfolio works.
+7. Direct project URLs work after refreshing.
+8. Iframe-to-parent navigation messages are validated.
+
+## 49. PROJECT DETAIL TESTING
+
+Verify:
+
+1. Main featured video.
+2. Video controls.
+3. Additional photographs.
+4. Additional videos.
+5. Blog-style text blocks.
+6. Image captions.
+7. Mixed media ordering.
+8. Related projects.
+9. Previous and next links.
+10. Correct project-specific content.
+
+## 50. ADMINISTRATOR TESTING
+
+Verify:
+
+1. Secure login.
+2. Masked password input.
+3. Administrator-only dashboard.
+4. Up to 15 project registrations.
+5. Sixteenth project registration blocked.
+6. PC image upload.
+7. PC video upload.
+8. LP cover replacement.
+9. Cover crop adjustments.
+10. Project editing.
+11. Project deletion.
+12. Main video replacement.
+13. Content block editing.
+14. Drag-and-drop ordering.
+15. Inline image captions.
+16. Persistent database saving.
+17. Publishing and draft controls.
+18. Secure logout.
+19. Unauthorized API requests rejected.
+
+## 51. BROWSER AND WEBGL VERIFICATION
+
+Test:
+- Desktop.
+- Tablet.
+- Mobile.
+- High-DPI screens.
+- Reduced-motion.
+- Mouse interaction.
+- Touch interaction.
+- Keyboard interaction.
+- Tab visibility.
+- Browser resizing.
+- WebGL context loss.
+- WebGL recovery and fallback.
+
+Confirm:
+- No console errors.
+- No missing assets.
+- No broken routes.
+- No failed media uploads.
+- No memory leaks.
+- No stale images after replacement.
+- No duplicate project records.
+- Proper renderer and texture cleanup.
+
+Ensure every animation frame, event listener, observer, geometry, buffer, texture, material, framebuffer, and renderer is released during teardown.
+
+Do not report functionality as complete until it has actually been tested.
+
+If a source file, original asset, database, or storage connection cannot be retrieved or configured, report the exact blocker.
+
+Never replace an inaccessible original source with a visual imitation.
+
+---
+
+# FINAL CREATIVE DIRECTION
+
+Build SUTIDEO SUNG as a unique digital vinyl portfolio exhibition.
+
+The original ThreeUI Working Volumes bookshelf must become a sophisticated collection of up to 15 LP records.
+
+Each LP album sleeve displays an actual portfolio project thumbnail.
+
+Each black vinyl record protrudes approximately halfway from its sleeve.
+
+The records move naturally within a carefully designed three-dimensional exhibition.
+
+Clicking an LP opens the corresponding project as a standalone editorial one-page website.
+
+Each project detail page starts with a cinematic main video and continues with a rich visual story made of text, additional photographs, captions, and videos.
+
+A private administrator can manage the entire collection through a secure CMS.
+
+The visual experience must combine:
+
+- The authored ThreeUI Three.js quality.
+- Premium vinyl product presentation.
+- Minimalist editorial design.
+- Cinematic portfolio storytelling.
+- Practical content management.
+
+The result must be unmistakably SUTIDEO SUNG.
+
+MINIMAL.
+PREMIUM.
+CINEMATIC.
+TACTILE.
+EDITORIAL.
+INTERACTIVE.
+
+Do not sacrifice the original rendering quality or interaction sophistication.
+
+Preserve the original source as the foundation and build the SUTIDEO SUNG vinyl experience as a carefully controlled custom derivative.

@@ -1,0 +1,6 @@
+{
+  "name": "SUTIDEO SUNG — Vinyl Portfolio System",
+  "description": "Premium minimalist, cinematic portfolio website for visual production studio SUTIDEO SUNG featuring an interactive 3D vinyl record collection and private project CMS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

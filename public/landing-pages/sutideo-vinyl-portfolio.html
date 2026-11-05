@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F6F2">
+  <meta name="description" content="SUTIDEO SUNG 3D Vinyl Portfolio Exhibition">
+  <title>SUTIDEO SUNG — Vinyl Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@400;500;600&family=Noto+Serif+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #F7F6F2;
+      --paper-deep: #EEEDE8;
+      --paper-pale: #FFFFFF;
+      --ink: #191919;
+      --ink-soft: #777777;
+      --walnut: #252220;
+      --walnut-deep: #141312;
+      --rule: rgba(25, 25, 25, 0.12);
+      --accent: #A52B25;
+      --serif: "Cinzel", "Noto Serif KR", "Iowan Old Style", Georgia, serif;
+      --mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --ease-out: cubic-bezier(0.2, 0.72, 0.24, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--mono);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    button { color: inherit; font: inherit; outline: none; }
+    button:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+
+    .experience {
+      position: fixed;
+      inset: 0;
+      isolation: isolate;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .scene-shell {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+    }
+
+    #scene {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      opacity: 0;
+      touch-action: none;
+      transition: opacity 800ms var(--ease-out);
+    }
+
+    #scene:active {
+      cursor: grabbing;
+    }
+
+    .webgl-ready #scene { opacity: 1; }
+
+    .pointer-label {
+      position: fixed;
+      z-index: 12;
+      display: grid;
+      min-width: 140px;
+      padding: 8px 14px;
+      border: 1px solid rgba(25, 25, 25, 0.15);
+      background: rgba(247, 246, 242, 0.95);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transform: translate(16px, 18px);
+      transition: opacity 120ms ease;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .pointer-label[aria-hidden="true"] { opacity: 0; }
+    .pointer-label strong { font-family: var(--serif); font-size: 0.8rem; margin-top: 2px; }
+
+    .editorial-header {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      left: 32px;
+      z-index: 8;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+
+    .editorial-index {
+      text-align: right;
+      display: grid;
+      gap: 3px;
+    }
+
+    .editorial-index span {
+      color: var(--ink-soft);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* Translucent information overlay floating directly over the LP vinyl disc */
+    .selection {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      width: max-content;
+      max-width: min(360px, 80vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 5px;
+      padding: 12px 22px;
+      background: rgba(247, 246, 242, 0.78);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(25, 25, 25, 0.14);
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
+      pointer-events: auto;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 150ms ease;
+    }
+
+    .selection:hover {
+      background: rgba(247, 246, 242, 0.94);
+      border-color: rgba(165, 43, 37, 0.45);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+      transform: translate(-50%, calc(-50% - 2px));
+    }
+
+    .selection__category {
+      margin: 0;
+      color: var(--accent);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .selection__title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: rgba(25, 25, 25, 0.92);
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      transition: color 200ms ease;
+      white-space: nowrap;
+    }
+
+    .selection:hover .selection__title {
+      color: var(--accent);
+    }
+
+    .browse-ui {
+      position: absolute;
+      right: 32px;
+      bottom: 20px;
+      left: 32px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      pointer-events: none;
+    }
+
+    .browse-ui > * {
+      pointer-events: auto;
+    }
+
+    .browse-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .round-button, .view-project-button {
+      border: 1px solid var(--rule);
+      background: rgba(247, 246, 242, 0.85);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 220ms ease;
+    }
+
+    .round-button {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      place-items: center;
+    }
+
+    .round-button:hover {
+      border-color: var(--ink);
+      background: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    .round-button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .view-project-button {
+      min-height: 44px;
+      padding: 0 24px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+
+    .view-project-button:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .index-nav {
+      display: grid;
+      gap: 8px;
+      text-align: right;
+    }
+
+    .markers {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .marker {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .marker::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 12px;
+      height: 2px;
+      background: rgba(25, 25, 25, 0.25);
+      content: "";
+      transform: translate(-50%, -50%);
+      transition: all 220ms ease;
+    }
+
+    .marker:hover::before {
+      background: var(--ink);
+      width: 16px;
+    }
+
+    .marker[aria-current="true"]::before {
+      width: 22px;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    .microcopy {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      background: var(--paper);
+      place-items: center;
+    }
+
+    .loading__inner {
+      display: grid;
+      justify-items: center;
+      gap: 16px;
+    }
+
+    .loading__disc {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      border-top-color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+
+    .loading p {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .static-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      display: flex;
+      flex-direction: column;
+      padding: 40px;
+      overflow-y: auto;
+      background: var(--paper);
+    }
+
+    .fallback-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .fallback-card {
+      border: 1px solid var(--rule);
+      background: #FFFFFF;
+      padding: 16px;
+      cursor: pointer;
+      display: grid;
+      gap: 12px;
+      transition: transform 200ms ease;
+    }
+
+    .fallback-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .fallback-card img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+      .editorial-header { top: 16px; right: 16px; left: 16px; }
+      .browse-ui { 
+        right: 16px; 
+        bottom: 14px; 
+        left: 16px; 
+        gap: 12px; 
+      }
+      .selection {
+        padding: 10px 18px;
+        max-width: min(320px, 86vw);
+      }
+      .selection__title { font-size: clamp(0.95rem, 3vw, 1.25rem); }
+      .selection__category { font-size: 0.58rem; }
+    }
+
+    @media (max-width: 600px) {
+      .browse-ui { bottom: 10px; gap: 8px; }
+      .selection { 
+        padding: 8px 16px; 
+        gap: 3px;
+        max-width: min(280px, 90vw);
+      }
+      .selection__title { font-size: 0.92rem; }
+      .selection__category { font-size: 0.55rem; }
+      .view-project-button { min-height: 38px; padding: 0 16px; font-size: 0.6rem; }
+      .round-button { width: 36px; height: 36px; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="experience" id="experience">
+    <div class="scene-shell">
+      <canvas id="scene" aria-hidden="true"></canvas>
+    </div>
+
+    <header class="editorial-header" aria-label="Collection">
+      <div class="editorial-index">
+        <span id="collection-count">ARCHIVE · 07 PROJECTS</span>
+        <span id="active-category">Commercial Film / Direction</span>
+      </div>
+    </header>
+
+    <div class="pointer-label" id="pointer-label" aria-hidden="true">
+      <span id="pointer-label-index">LP 01</span>
+      <strong id="pointer-label-title">THE SILENT ECHO</strong>
+    </div>
+
+    <!-- Translucent Information Overlay attached directly onto the LP Record -->
+    <div class="selection" id="selection-card" role="button" tabindex="0" aria-label="View project details">
+      <span class="selection__category" id="selection-category">Commercial Film / Direction</span>
+      <h1 class="selection__title" id="selection-title">THE SILENT ECHO</h1>
+    </div>
+
+    <section class="browse-ui" id="browse-ui" aria-label="Vinyl navigation">
+      <div class="browse-actions">
+        <button class="round-button" id="previous" type="button" aria-label="Previous Vinyl">
+          <svg viewBox="0 0 16 16"><path d="m10.5 3.5-4.5 4.5 4.5 4.5"></path></svg>
+        </button>
+        <button class="view-project-button" id="view-project" type="button">
+          VIEW PROJECT
+        </button>
+        <button class="round-button" id="next" type="button" aria-label="Next Vinyl">
+          <svg viewBox="0 0 16 16"><path d="m5.5 3.5 4.5 4.5-4.5 4.5"></path></svg>
+        </button>
+      </div>
+
+      <nav class="index-nav" aria-label="Vinyl index">
+        <div class="markers" id="markers" role="tablist" aria-label="Select vinyl"></div>
+        <p class="microcopy">Drag · Click LP to Open · Wheel to Browse</p>
+      </nav>
+    </section>
+
+    <section class="static-fallback" id="static-fallback" hidden>
+      <header>
+        <h2 style="font-family: var(--serif); margin: 0 0 8px;">SUTIDEO SUNG · PORTFOLIO ARCHIVE</h2>
+        <p style="color: var(--ink-soft); margin: 0;">Interactive 3D vinyl collection fallback mode.</p>
+      </header>
+      <div class="fallback-grid" id="fallback-grid"></div>
+    </section>
+
+    <div class="loading" id="loading">
+      <div class="loading__inner">
+        <div class="loading__disc"></div>
+        <p>Curating Vinyl Exhibition</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+    import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+
+    // Dynamic projects array received from parent or fallback
+    let PROJECTS = [
+      {
+        id: "proj-01",
+        slug: "project-01",
+        projectNumber: "01",
+        title: "THE SILENT ECHO",
+        category: "Commercial Film / Direction",
+        year: "2026",
+        shortDescription: "도심 속 정적과 공간의 조형미를 담아낸 시네마틱 건축 비주얼 필름.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 01 · THE SILENT ECHO"
+      },
+      {
+        id: "proj-02",
+        slug: "project-02",
+        projectNumber: "02",
+        title: "OBSIDIAN CHRONICLE",
+        category: "Product Visual / Macro Cinema",
+        year: "2026",
+        shortDescription: "흑요석의 텍스처와 금속의 차가운 광택을 극대화한 하이엔드 타임피스 프로덕트 필름.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 02 · OBSIDIAN CHRONICLE"
+      },
+      {
+        id: "proj-03",
+        slug: "project-03",
+        projectNumber: "03",
+        title: "AURA OF MOTION",
+        category: "Motion Graphics / 3D Art",
+        year: "2026",
+        shortDescription: "유체 역학과 키네틱 타이포그래피가 융합된 인터랙티브 브랜드 아이덴티티 무비.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 03 · AURA OF MOTION"
+      },
+      {
+        id: "proj-04",
+        slug: "project-04",
+        projectNumber: "04",
+        title: "NOCTURNE SEOUL",
+        category: "Cinematography / Editorial",
+        year: "2025",
+        shortDescription: "비 내리는 서울의 밤, 네온과 안개 속에 감춰진 도시의 서정성을 담은 다큐멘터리 에세이.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 04 · NOCTURNE SEOUL"
+      },
+      {
+        id: "proj-05",
+        slug: "project-05",
+        projectNumber: "05",
+        title: "SYNTHETIC GENESIS",
+        category: "AI Visual Production / Concept",
+        year: "2026",
+        shortDescription: "초현실적 자연 생태계와 미래 기계 문명의 공존을 탐구한 생성형 AI 융합 필름.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 05 · SYNTHETIC GENESIS"
+      },
+      {
+        id: "proj-06",
+        slug: "project-06",
+        projectNumber: "06",
+        title: "TERRA INCOGNITA",
+        category: "Brand Film / Aerial Cinema",
+        year: "2025",
+        shortDescription: "화산 지대와 검은 모래 해변의 압도적인 질감을 FPV 고속 비행으로 포착한 아웃도어 캠페인.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 06 · TERRA INCOGNITA"
+      },
+      {
+        id: "proj-07",
+        slug: "project-07",
+        projectNumber: "07",
+        title: "THE ARTISAN’S HANDS",
+        category: "Documentary / Photography",
+        year: "2025",
+        shortDescription: "오랜 세월 금속을 다듬어온 장인의 손길과 도구의 마모를 집요하게 기록한 에디토리얼 포토 시리즈.",
+        thumbnailUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80",
+        lpCoverUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&h=800&q=80",
+        centerLabelText: "SUTIDEO 07 · THE ARTISAN’S HANDS"
+      }
+    ];
+
+    const clamp = THREE.MathUtils.clamp;
+    const damp = THREE.MathUtils.damp;
+    const smoothstep = (value) => value * value * (3 - 2 * value);
+    const mod = (value, length) => ((value % length) + length) % length;
+    const pad = (value) => String(value).padStart(2, "0");
+
+    const experience = document.querySelector("#experience");
+    const canvas = document.querySelector("#scene");
+    const loading = document.querySelector("#loading");
+    const staticFallback = document.querySelector("#static-fallback");
+    const fallbackGrid = document.querySelector("#fallback-grid");
+    const selectionCard = document.querySelector("#selection-card");
+    const selectionTitle = document.querySelector("#selection-title");
+    const selectionCategory = document.querySelector("#selection-category");
+    const selectionNote = document.querySelector("#selection-note");
+    const counter = document.querySelector("#counter");
+    const collectionCount = document.querySelector("#collection-count");
+    const activeCategory = document.querySelector("#active-category");
+    const markers = document.querySelector("#markers");
+    const previousButton = document.querySelector("#previous");
+    const nextButton = document.querySelector("#next");
+    const viewProjectButton = document.querySelector("#view-project");
+    const pointerLabel = document.querySelector("#pointer-label");
+    const pointerLabelIndex = document.querySelector("#pointer-label-index");
+    const pointerLabelTitle = document.querySelector("#pointer-label-title");
+
+    let renderer, scene, camera, shelfStage;
+    let vinylRigs = [];
+    let hitTargets = [];
+    let rafId = 0;
+    let lastTime = performance.now();
+    let position = 0;
+    let targetPosition = 0;
+    let selectedIndex = 0;
+    let hoveredIndex = -1;
+    let wheelIdle = 0;
+    let viewWidth = window.innerWidth;
+    let viewHeight = window.innerHeight;
+    let suspended = false;
+
+    // Gesture detection
+    let isDraggingPointer = false;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    let dragDistance = 0;
+    const DRAG_THRESHOLD = 8;
+
+    const pointer = {
+      ndc: new THREE.Vector2(3, 3),
+      clientX: 0,
+      clientY: 0
+    };
+
+    const raycaster = new THREE.Raycaster();
+    const shelfCameraPosition = new THREE.Vector3();
+    const shelfCameraTarget = new THREE.Vector3();
+
+    // Responsive spacing based on count
+    let spacing = 2.4;
+    const shelfBoardTop = 0.45;
+
+    // Texture cache
+    const textureLoader = new THREE.TextureLoader();
+    const textureCache = new Map();
+
+    function configureResponsive() {
+      viewWidth = window.innerWidth;
+      viewHeight = window.innerHeight;
+      const isMobile = viewWidth < 768;
+      const isTablet = viewWidth >= 768 && viewWidth < 1024;
+
+      if (isMobile) {
+        spacing = 2.3;
+        shelfCameraPosition.set(0, 1.95, 7.8);
+        shelfCameraTarget.set(0, 1.45, 0);
+      } else if (isTablet) {
+        spacing = 2.5;
+        shelfCameraPosition.set(0, 2.05, 8.2);
+        shelfCameraTarget.set(0, 1.48, 0);
+      } else {
+        spacing = 2.65;
+        shelfCameraPosition.set(0, 2.05, 8.4);
+        shelfCameraTarget.set(0, 1.5, 0);
+      }
+
+      if (camera) {
+        camera.position.copy(shelfCameraPosition);
+        camera.lookAt(shelfCameraTarget);
+      }
+    }
+
+    // Concentric groove procedural texture
+    let sharedGrooveTexture = null;
+    function getVinylGrooveTexture() {
+      if (sharedGrooveTexture) return sharedGrooveTexture;
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 1024;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#111111";
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // Radial rings
+      for (let r = 80; r < 500; r += 1.8) {
+        const alpha = 0.12 + (Math.sin(r * 0.8) + 1) * 0.12;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = 0.8 + Math.random() * 0.5;
+        ctx.beginPath();
+        ctx.arc(512, 512, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      sharedGrooveTexture = tex;
+      return tex;
+    }
+
+    // Procedural Center Label Texture
+    function createCenterLabelTexture(project, index) {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      // Label background (Artisan paper look)
+      ctx.fillStyle = "#EEEDE8";
+      ctx.beginPath();
+      ctx.arc(256, 256, 250, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Border lines
+      ctx.strokeStyle = "#191919";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.strokeStyle = "#A52B25";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(256, 256, 220, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Text elements
+      ctx.fillStyle = "#191919";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.font = "600 22px Inter, sans-serif";
+      ctx.letterSpacing = "4px";
+      ctx.fillText("SUTIDEO SUNG", 256, 120);
+
+      ctx.font = "400 16px Inter, sans-serif";
+      ctx.letterSpacing = "3px";
+      ctx.fillStyle = "#A52B25";
+      ctx.fillText(`SIDE A · 33⅓ RPM`, 256, 155);
+
+      ctx.font = "500 28px 'Cinzel', serif";
+      ctx.fillStyle = "#191919";
+      ctx.letterSpacing = "1px";
+      const title = project.title.length > 15 ? project.title.substring(0, 14) + "…" : project.title;
+      ctx.fillText(title, 256, 350);
+
+      ctx.font = "400 16px Inter, sans-serif";
+      ctx.fillStyle = "#777777";
+      ctx.letterSpacing = "2px";
+      ctx.fillText(`PROJECT ${pad(index + 1)} · ${project.year || "2026"}`, 256, 385);
+
+      // Center Spindle Hole Indicator
+      ctx.fillStyle = "#0A0A0A";
+      ctx.beginPath();
+      ctx.arc(256, 256, 26, 0, Math.PI * 2);
+      ctx.fill();
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // Default Fallback Cover
+    function createDefaultCoverTexture(project, index) {
+      const c = document.createElement("canvas");
+      c.width = 800;
+      c.height = 800;
+      const ctx = c.getContext("2d");
+
+      ctx.fillStyle = "#141312";
+      ctx.fillRect(0, 0, 800, 800);
+
+      ctx.strokeStyle = "rgba(221, 218, 211, 0.25)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(40, 40, 720, 720);
+
+      ctx.fillStyle = "#A52B25";
+      ctx.font = "600 24px Inter, sans-serif";
+      ctx.letterSpacing = "6px";
+      ctx.fillText(`SUTIDEO ARCHIVE · NO. ${pad(index + 1)}`, 80, 120);
+
+      ctx.fillStyle = "#F7F6F2";
+      ctx.font = "500 64px 'Cinzel', Georgia, serif";
+      ctx.fillText(project.title, 80, 420);
+
+      ctx.fillStyle = "#DDDAD3";
+      ctx.font = "400 20px Inter, sans-serif";
+      ctx.letterSpacing = "3px";
+      ctx.fillText(project.category.toUpperCase(), 80, 470);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // Load Project Cover Texture with fallback
+    function loadProjectCover(project, index, callback) {
+      const url = project.lpCoverUrl || project.thumbnailUrl;
+      if (!url) {
+        callback(createDefaultCoverTexture(project, index));
+        return;
+      }
+
+      if (textureCache.has(url)) {
+        callback(textureCache.get(url));
+        return;
+      }
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const c = document.createElement("canvas");
+        c.width = 1024;
+        c.height = 1024;
+        const ctx = c.getContext("2d");
+
+        // Center square crop
+        const pos = project.lpCoverPosition || { x: 50, y: 50, scale: 1 };
+        const scale = pos.scale || 1;
+        const sw = img.width / scale;
+        const sh = img.height / scale;
+        const minDim = Math.min(sw, sh);
+
+        const cropW = minDim;
+        const cropH = minDim;
+        const offsetX = ((img.width - cropW) * (pos.x || 50)) / 100;
+        const offsetY = ((img.height - cropH) * (pos.y || 50)) / 100;
+
+        ctx.drawImage(img, Math.max(0, offsetX), Math.max(0, offsetY), cropW, cropH, 0, 0, 1024, 1024);
+
+        // Soft printed paperboard sheen
+        const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
+        grad.addColorStop(0, "rgba(255,255,255,0.06)");
+        grad.addColorStop(0.5, "rgba(0,0,0,0)");
+        grad.addColorStop(1, "rgba(0,0,0,0.14)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1024, 1024);
+
+        const tex = new THREE.CanvasTexture(c);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = 8;
+        textureCache.set(url, tex);
+        callback(tex);
+      };
+      img.onerror = () => {
+        const fallbackTex = createDefaultCoverTexture(project, index);
+        textureCache.set(url, fallbackTex);
+        callback(fallbackTex);
+      };
+      img.src = url;
+    }
+
+    // Build Vinyl Rig (Sleeve + Protruding Disc)
+    function createVinylRig(project, index) {
+      const root = new THREE.Group();
+      root.name = `vinyl-${project.id}`;
+      root.userData.index = index;
+      root.userData.project = project;
+
+      const motion = new THREE.Group();
+      motion.name = `${project.id}-motion`;
+      root.add(motion);
+
+      // Sleeve Dimensions: square 1.8m x 1.8m x 0.038m thickness
+      const sleeveWidth = 1.82;
+      const sleeveHeight = 1.82;
+      const sleeveDepth = 0.036;
+
+      // Sleeve Front Material (Paperboard matte)
+      const sleeveFrontMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        roughness: 0.88,
+        metalness: 0.03,
+        clearcoat: 0.05,
+        clearcoatRoughness: 0.8
+      });
+
+      // Default back & edge material
+      const sleevePaperMat = new THREE.MeshPhysicalMaterial({
+        color: 0x181818,
+        roughness: 0.94,
+        metalness: 0.02
+      });
+
+      // Load cover image
+      loadProjectCover(project, index, (tex) => {
+        sleeveFrontMat.map = tex;
+        sleeveFrontMat.needsUpdate = true;
+      });
+
+      const sleeveGeom = new RoundedBoxGeometry(sleeveWidth, sleeveHeight, sleeveDepth, 4, 0.008);
+      
+      // Multi-material for sleeve box: [right, left, top, bottom, front, back]
+      const sleeveMaterials = [
+        sleevePaperMat, // right (extraction slot)
+        sleevePaperMat, // left spine
+        sleevePaperMat, // top
+        sleevePaperMat, // bottom
+        sleeveFrontMat, // FRONT COVER
+        sleevePaperMat  // back
+      ];
+
+      const sleeveMesh = new THREE.Mesh(sleeveGeom, sleeveMaterials);
+      sleeveMesh.castShadow = true;
+      sleeveMesh.receiveShadow = true;
+      sleeveMesh.name = `${project.id}-sleeve`;
+      motion.add(sleeveMesh);
+
+      // VINYL DISC
+      // Diameter: 1.76m. Extraction: 50% protruding to the right (+X)
+      // Radius: 0.88m. Disc Center shifted to X = +0.48m so ~52% is exposed.
+      const vinylGroup = new THREE.Group();
+      vinylGroup.name = `${project.id}-disc-group`;
+      vinylGroup.position.set(0.52, 0, 0.003); // Protrude rightward from inside sleeve
+      motion.add(vinylGroup);
+
+      const discRadius = 0.88;
+      const discThickness = 0.012;
+      const discGeom = new THREE.CylinderGeometry(discRadius, discRadius, discThickness, 64);
+      discGeom.rotateX(Math.PI / 2); // Align with XY plane
+
+      const grooveTexture = getVinylGrooveTexture();
+      const discMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x0a0a0a,
+        roughness: 0.32,
+        roughnessMap: grooveTexture,
+        metalness: 0.65,
+        clearcoat: 0.45,
+        clearcoatRoughness: 0.22,
+        reflectivity: 0.85
+      });
+
+      const discMesh = new THREE.Mesh(discGeom, discMaterial);
+      discMesh.castShadow = true;
+      discMesh.receiveShadow = true;
+      discMesh.name = `${project.id}-disc`;
+      vinylGroup.add(discMesh);
+
+      // Center Spindle Label (Front & Back)
+      const labelRadius = 0.29;
+      const labelGeom = new THREE.CircleGeometry(labelRadius, 48);
+      const labelTex = createCenterLabelTexture(project, index);
+      const labelMat = new THREE.MeshStandardMaterial({
+        map: labelTex,
+        roughness: 0.65,
+        metalness: 0.05
+      });
+
+      const frontLabel = new THREE.Mesh(labelGeom, labelMat);
+      frontLabel.position.z = discThickness * 0.5 + 0.001;
+      vinylGroup.add(frontLabel);
+
+      const backLabel = frontLabel.clone();
+      backLabel.rotation.y = Math.PI;
+      backLabel.position.z = -discThickness * 0.5 - 0.001;
+      vinylGroup.add(backLabel);
+
+      // Hit Target for accurate clicking on both sleeve and disc
+      const hitGeom = new THREE.BoxGeometry(sleeveWidth * 1.5, sleeveHeight * 1.15, 0.4);
+      const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+      const hit = new THREE.Mesh(hitGeom, hitMat);
+      hit.position.set(0.24, 0, 0);
+      hit.userData.index = index;
+      hit.userData.project = project;
+      motion.add(hit);
+      hitTargets.push(hit);
+
+      // Soft Contact Shadow underneath
+      const shadowCanvas = document.createElement("canvas");
+      shadowCanvas.width = 256;
+      shadowCanvas.height = 128;
+      const sctx = shadowCanvas.getContext("2d");
+      const grad = sctx.createRadialGradient(128, 64, 5, 128, 64, 120);
+      grad.addColorStop(0, "rgba(0,0,0,0.5)");
+      grad.addColorStop(0.5, "rgba(0,0,0,0.18)");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      sctx.fillStyle = grad;
+      sctx.fillRect(0, 0, 256, 128);
+
+      const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+      const shadowMat = new THREE.MeshBasicMaterial({
+        map: shadowTex,
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false
+      });
+      const shadowMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.8), shadowMat);
+      shadowMesh.rotation.x = -Math.PI * 0.5;
+      shadowMesh.position.set(0.25, -sleeveHeight * 0.5 - 0.02, 0);
+      root.add(shadowMesh);
+
+      return {
+        data: project,
+        root,
+        motion,
+        vinylGroup,
+        discMesh,
+        hit,
+        shadowMesh,
+        opacity: 1,
+        height: sleeveHeight
+      };
+    }
+
+    // Exhibition Room & Warm Lighting
+    function addRoom() {
+      // Floor (Refined warm stone/concrete)
+      const floorGeom = new THREE.PlaneGeometry(40, 24);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0xEEEDE8,
+        roughness: 0.85,
+        metalness: 0.05
+      });
+      const floor = new THREE.Mesh(floorGeom, floorMat);
+      floor.rotation.x = -Math.PI * 0.5;
+      floor.position.y = -0.05;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Back Wall
+      const wallGeom = new THREE.PlaneGeometry(40, 16);
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0xF7F6F2,
+        roughness: 0.98,
+        metalness: 0
+      });
+      const wall = new THREE.Mesh(wallGeom, wallMat);
+      wall.position.set(0, 6, -3.2);
+      wall.receiveShadow = true;
+      scene.add(wall);
+
+      // Minimalist Exhibition Display Platform (Dark Walnut ledge)
+      const ledgeGeom = new THREE.BoxGeometry(45, 0.3, 1.4);
+      const ledgeMat = new THREE.MeshStandardMaterial({
+        color: 0x22201E,
+        roughness: 0.65,
+        metalness: 0.1
+      });
+      const ledge = new THREE.Mesh(ledgeGeom, ledgeMat);
+      ledge.position.set(0, 0.3, -0.05);
+      ledge.receiveShadow = true;
+      ledge.castShadow = true;
+      shelfStage.add(ledge);
+
+      // Subtle brass lip
+      const lipGeom = new THREE.BoxGeometry(45.05, 0.06, 0.08);
+      const lipMat = new THREE.MeshStandardMaterial({
+        color: 0xA52B25,
+        roughness: 0.4,
+        metalness: 0.5
+      });
+      const lip = new THREE.Mesh(lipGeom, lipMat);
+      lip.position.set(0, 0.46, 0.65);
+      shelfStage.add(lip);
+    }
+
+    function addLights() {
+      // Ambient / Hemisphere light
+      const hemi = new THREE.HemisphereLight(0xFFFFFF, 0x332E2B, 0.85);
+      scene.add(hemi);
+
+      // Studio Key light with soft shadow
+      const key = new THREE.DirectionalLight(0xFFFBF4, 1.8);
+      key.position.set(-5, 9, 7);
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.camera.left = -10;
+      key.shadow.camera.right = 10;
+      key.shadow.camera.top = 7;
+      key.shadow.camera.bottom = -2;
+      key.shadow.camera.near = 1;
+      key.shadow.camera.far = 24;
+      key.shadow.bias = -0.00015;
+      key.shadow.radius = 3;
+      scene.add(key);
+
+      // Cool fill light
+      const fill = new THREE.DirectionalLight(0xE0E8EF, 0.45);
+      fill.position.set(6, 4, 5);
+      scene.add(fill);
+
+      // Rim light for vinyl groove highlights
+      const rim = new THREE.DirectionalLight(0xFFEEDD, 0.65);
+      rim.position.set(0, 6, -3);
+      scene.add(rim);
+    }
+
+    function buildMarkers() {
+      markers.innerHTML = "";
+      PROJECTS.forEach((project, index) => {
+        const btn = document.createElement("button");
+        btn.className = "marker";
+        btn.type = "button";
+        btn.role = "tab";
+        btn.setAttribute("aria-label", `Select project ${index + 1}: ${project.title}`);
+        btn.setAttribute("aria-current", index === selectedIndex ? "true" : "false");
+        btn.addEventListener("click", () => selectProjectIndex(index));
+        markers.append(btn);
+      });
+    }
+
+    function updateSelection(index) {
+      if (!PROJECTS.length) return;
+      selectedIndex = mod(index, PROJECTS.length);
+      const proj = PROJECTS[selectedIndex];
+
+      if (counter) counter.textContent = `${pad(selectedIndex + 1)} / ${pad(PROJECTS.length)}`;
+      if (collectionCount) collectionCount.textContent = `ARCHIVE · ${pad(PROJECTS.length)} PROJECTS`;
+      if (selectionTitle) selectionTitle.textContent = proj.title;
+      if (selectionCategory) selectionCategory.textContent = proj.category;
+      if (activeCategory) activeCategory.textContent = proj.category;
+      if (selectionNote) selectionNote.textContent = proj.shortDescription || "";
+
+      [...markers.children].forEach((marker, i) => {
+        marker.setAttribute("aria-current", i === selectedIndex ? "true" : "false");
+      });
+    }
+
+    function selectProjectIndex(index) {
+      const rounded = Math.round(targetPosition);
+      const current = mod(rounded, PROJECTS.length);
+      let delta = index - current;
+      if (delta > PROJECTS.length / 2) delta -= PROJECTS.length;
+      if (delta < -PROJECTS.length / 2) delta += PROJECTS.length;
+      targetPosition = rounded + delta;
+      updateSelection(index);
+      requestFrame();
+    }
+
+    function navigate(direction) {
+      targetPosition = Math.round(targetPosition) + direction;
+      updateSelection(mod(Math.round(targetPosition), PROJECTS.length));
+      requestFrame();
+    }
+
+    function openCurrentProject() {
+      const proj = PROJECTS[selectedIndex];
+      if (!proj) return;
+      notifyParentOpenProject(proj.slug);
+    }
+
+    function notifyParentOpenProject(slug) {
+      try {
+        window.parent.postMessage({
+          type: "SUTIDEO_OPEN_PROJECT",
+          slug: slug
+        }, "*");
+      } catch (err) {
+        console.error("Failed to postMessage:", err);
+      }
+    }
+
+    function setPointerFromEvent(event) {
+      const rect = canvas.getBoundingClientRect();
+      pointer.clientX = event.clientX;
+      pointer.clientY = event.clientY;
+      pointer.ndc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.ndc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    }
+
+    function projectIndexAtPointer() {
+      raycaster.setFromCamera(pointer.ndc, camera);
+      const hits = raycaster.intersectObjects(hitTargets, false);
+      return hits.length ? hits[0].object.userData.index : -1;
+    }
+
+    function updateHover() {
+      const idx = projectIndexAtPointer();
+      if (idx !== hoveredIndex) {
+        hoveredIndex = idx;
+        canvas.style.cursor = idx >= 0 ? "pointer" : (isDraggingPointer ? "grabbing" : "grab");
+        if (idx >= 0 && PROJECTS[idx]) {
+          const proj = PROJECTS[idx];
+          pointerLabelIndex.textContent = `LP ${pad(idx + 1)}`;
+          pointerLabelTitle.textContent = proj.title;
+          pointerLabel.setAttribute("aria-hidden", "false");
+        } else {
+          pointerLabel.setAttribute("aria-hidden", "true");
+        }
+        requestFrame();
+      }
+    }
+
+    // Pointer events on canvas
+    function onPointerDown(e) {
+      if (e.button !== 0) return;
+      isDraggingPointer = true;
+      pointerStartX = e.clientX;
+      pointerStartY = e.clientY;
+      dragDistance = 0;
+      setPointerFromEvent(e);
+      canvas.setPointerCapture?.(e.pointerId);
+    }
+
+    function onPointerMove(e) {
+      setPointerFromEvent(e);
+      pointerLabel.style.left = `${e.clientX}px`;
+      pointerLabel.style.top = `${e.clientY}px`;
+
+      if (isDraggingPointer) {
+        const deltaX = e.clientX - pointerStartX;
+        dragDistance += Math.abs(deltaX);
+        pointerStartX = e.clientX;
+        targetPosition -= deltaX * 0.0035;
+        requestFrame();
+      } else {
+        updateHover();
+      }
+    }
+
+    function onPointerUp(e) {
+      if (!isDraggingPointer) return;
+      isDraggingPointer = false;
+      try {
+        canvas.releasePointerCapture?.(e.pointerId);
+      } catch {}
+
+      // If user performed click (not drag), select or open
+      if (dragDistance < DRAG_THRESHOLD) {
+        setPointerFromEvent(e);
+        const clickedIndex = projectIndexAtPointer();
+        if (clickedIndex >= 0) {
+          if (clickedIndex === selectedIndex) {
+            // Already selected -> Click opens project
+            openCurrentProject();
+          } else {
+            // Select clicked vinyl
+            selectProjectIndex(clickedIndex);
+          }
+        }
+      } else {
+        // Snap to nearest vinyl on drag release
+        targetPosition = Math.round(targetPosition);
+      }
+      requestFrame();
+    }
+
+    function onWheel(e) {
+      e.preventDefault();
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      targetPosition += clamp(delta * 0.0022, -0.65, 0.65);
+      wheelIdle = 0.14;
+      requestFrame();
+    }
+
+    function updateShelfLayout(delta, elapsed) {
+      position = damp(position, targetPosition, 10, delta);
+      if (Math.abs(position - targetPosition) < 0.0005) {
+        position = targetPosition;
+      }
+
+      if (wheelIdle > 0) {
+        wheelIdle -= delta;
+        if (wheelIdle <= 0) targetPosition = Math.round(targetPosition);
+      }
+
+      const nearest = mod(Math.round(position), PROJECTS.length);
+      if (nearest !== selectedIndex) updateSelection(nearest);
+
+      const count = PROJECTS.length;
+      vinylRigs.forEach((rig, index) => {
+        let offset = index - position;
+        offset -= Math.round(offset / count) * count;
+        const distance = Math.abs(offset);
+        const focus = 1 - clamp(distance, 0, 1);
+
+        // Position along ledge
+        const targetX = offset * spacing;
+        const targetY = shelfBoardTop + rig.height * 0.5 + focus * 0.18;
+        const targetZ = 0.12 + focus * 0.35 - Math.min(distance, 2.8) * 0.08;
+
+        // Subtle fanning angle
+        const targetRotY = -offset * 0.085;
+        const targetRotZ = -offset * 0.015;
+        const targetScale = 1 + focus * 0.12;
+
+        rig.root.position.x = damp(rig.root.position.x, targetX, 12, delta);
+        rig.root.position.y = damp(rig.root.position.y, targetY, 12, delta);
+        rig.root.position.z = damp(rig.root.position.z, targetZ, 12, delta);
+        rig.root.rotation.y = damp(rig.root.rotation.y, targetRotY, 12, delta);
+        rig.root.rotation.z = damp(rig.root.rotation.z, targetRotZ, 12, delta);
+        rig.root.scale.setScalar(damp(rig.root.scale.x, targetScale, 12, delta));
+
+        // Selected LP vinyl rotates gently around center
+        if (distance < 0.3) {
+          rig.vinylGroup.rotation.z += delta * 0.45;
+        }
+
+        // Hover lift
+        const isHovered = hoveredIndex === index;
+        const hoverLift = isHovered ? 0.06 : 0;
+        const hoverPitch = isHovered ? pointer.ndc.y * 0.03 : 0;
+        const hoverYaw = isHovered ? -pointer.ndc.x * 0.03 : 0;
+
+        const idleBreath = Math.sin(elapsed * 1.2 + index * 0.8) * 0.008 * focus;
+        rig.motion.position.y = damp(rig.motion.position.y, idleBreath + hoverLift, 10, delta);
+        rig.motion.rotation.x = damp(rig.motion.rotation.x, hoverPitch, 10, delta);
+        rig.motion.rotation.y = damp(rig.motion.rotation.y, hoverYaw, 10, delta);
+
+        // Distance opacity fade
+        const fadeProgress = clamp((distance - 2.8) / 0.8, 0, 1);
+        const opacity = 1 - smoothstep(fadeProgress);
+        rig.shadowMesh.material.opacity = opacity * 0.35;
+        rig.hit.visible = opacity > 0.15;
+      });
+
+      // Attach the translucent title/subtitle badge hitbox directly onto the active LP record
+      if (selectionCard && vinylRigs.length && vinylRigs[selectedIndex]) {
+        const activeRig = vinylRigs[selectedIndex];
+        const lpPos = new THREE.Vector3();
+        activeRig.motion.getWorldPosition(lpPos);
+        lpPos.x += 0.35;
+        lpPos.y += 0.05;
+        lpPos.project(camera);
+        const px = ((lpPos.x + 1) / 2) * viewWidth;
+        const py = ((-lpPos.y + 1) / 2) * viewHeight;
+        selectionCard.style.left = `${px.toFixed(1)}px`;
+        selectionCard.style.top = `${py.toFixed(1)}px`;
+      }
+    }
+
+    function requestFrame() {
+      if (!rafId && !suspended) {
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+
+    function frame(time) {
+      rafId = 0;
+      const delta = Math.min((time - lastTime) / 1000, 0.05);
+      const elapsed = time / 1000;
+      lastTime = time;
+
+      updateShelfLayout(delta, elapsed);
+      renderer.render(scene, camera);
+
+      const moving = Math.abs(position - targetPosition) > 0.0005 || isDraggingPointer || wheelIdle > 0;
+      if (!suspended && (moving || hoveredIndex >= 0)) {
+        requestFrame();
+      }
+    }
+
+    function resize() {
+      configureResponsive();
+      renderer.setSize(viewWidth, viewHeight, false);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, viewWidth < 768 ? 1.5 : 2));
+      camera.aspect = viewWidth / viewHeight;
+      camera.updateProjectionMatrix();
+      requestFrame();
+    }
+
+    function renderStaticFallback() {
+      loading.hidden = true;
+      staticFallback.hidden = false;
+      fallbackGrid.innerHTML = "";
+      PROJECTS.forEach((proj, idx) => {
+        const card = document.createElement("div");
+        card.className = "fallback-card";
+        card.innerHTML = `
+          <img src="${proj.lpCoverUrl || proj.thumbnailUrl}" alt="${proj.title}" />
+          <div>
+            <div style="font-size: 0.65rem; color: var(--accent); font-weight:600;">LP ${pad(idx + 1)} · ${proj.year}</div>
+            <div style="font-family: var(--serif); font-size: 1.1rem; margin: 4px 0;">${proj.title}</div>
+            <div style="font-size: 0.72rem; color: var(--ink-soft);">${proj.category}</div>
+          </div>
+        `;
+        card.addEventListener("click", () => notifyParentOpenProject(proj.slug));
+        fallbackGrid.append(card);
+      });
+    }
+
+    function rebuildSceneWithProjects(newProjects) {
+      if (!Array.isArray(newProjects) || !newProjects.length) return;
+      PROJECTS = newProjects.slice(0, 15);
+
+      // Clean existing rigs
+      vinylRigs.forEach(rig => {
+        shelfStage.remove(rig.root);
+      });
+      vinylRigs = [];
+      hitTargets = [];
+
+      // Rebuild rigs
+      vinylRigs = PROJECTS.map((proj, idx) => {
+        const rig = createVinylRig(proj, idx);
+        shelfStage.add(rig.root);
+        return rig;
+      });
+
+      buildMarkers();
+      updateSelection(selectedIndex);
+      requestFrame();
+    }
+
+    // PostMessage communication with React Parent
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (!data || typeof data !== "object") return;
+
+      if (data.type === "SUTIDEO_UPDATE_PROJECTS" && Array.isArray(data.projects)) {
+        rebuildSceneWithProjects(data.projects);
+      } else if (data.type === "SUTIDEO_SELECT_SLUG" && data.slug) {
+        const found = PROJECTS.findIndex(p => p.slug === data.slug);
+        if (found >= 0) selectProjectIndex(found);
+      }
+    });
+
+    async function init() {
+      configureResponsive();
+
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance"
+        });
+      } catch (err) {
+        renderStaticFallback();
+        return;
+      }
+
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.setClearColor(0xF7F6F2, 1);
+
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0xF7F6F2, 0.02);
+
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      const envTarget = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
+      scene.environment = envTarget.texture;
+      scene.environmentIntensity = 0.65;
+      pmremGenerator.dispose();
+
+      camera = new THREE.PerspectiveCamera(34, viewWidth / viewHeight, 0.1, 50);
+      shelfStage = new THREE.Group();
+      scene.add(shelfStage);
+
+      addRoom();
+      addLights();
+
+      vinylRigs = PROJECTS.map((proj, idx) => {
+        const rig = createVinylRig(proj, idx);
+        shelfStage.add(rig.root);
+        return rig;
+      });
+
+      buildMarkers();
+      updateSelection(0);
+      resize();
+
+      // Listeners
+      canvas.addEventListener("pointerdown", onPointerDown);
+      canvas.addEventListener("pointermove", onPointerMove);
+      canvas.addEventListener("pointerup", onPointerUp);
+      canvas.addEventListener("pointercancel", onPointerUp);
+      experience.addEventListener("wheel", onWheel, { passive: false });
+      window.addEventListener("resize", resize);
+
+      previousButton.addEventListener("click", () => navigate(-1));
+      nextButton.addEventListener("click", () => navigate(1));
+      viewProjectButton.addEventListener("click", openCurrentProject);
+      selectionTitle.addEventListener("click", openCurrentProject);
+
+      if (selectionCard) {
+        selectionCard.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openCurrentProject();
+        });
+        selectionCard.addEventListener("pointerdown", onPointerDown);
+        selectionCard.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openCurrentProject();
+          }
+        });
+      }
+
+      loading.hidden = true;
+      experience.classList.add("webgl-ready");
+      requestFrame();
+
+      // Announce ready to React host
+      try {
+        window.parent.postMessage({ type: "SUTIDEO_VINYL_READY" }, "*");
+      } catch {}
+    }
+
+    init().catch(err => {
+      console.error(err);
+      renderStaticFallback();
+    });
+  </script>
+</body>
+</html>
