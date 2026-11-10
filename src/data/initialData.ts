@@ -9,7 +9,7 @@ export const INITIAL_SETTINGS: SiteSettings = {
 기획부터 촬영, 편집, 모션그래픽과 AI 비주얼까지,
 브랜드가 전하고 싶은 이야기를 하나의 장면으로 설계합니다.`,
   contactEmail: 'contact@sutideosung.com',
-  instagramUrl: 'https://instagram.com/sutideosung',
+  instagramUrl: 'https://instagram.com/ddd_huck',
   location: 'Seoul, Republic of Korea',
   footerText: 'SUTIDEO SUNG © ALL RIGHTS RESERVED.'
 };

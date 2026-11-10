@@ -131,7 +131,15 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
               <video
                 ref={videoRef}
                 src={project.mainVideoUrl}
-                poster={project.posterUrl || project.thumbnailUrl}
+                poster={
+                  project.posterUrl &&
+                  (!project.posterUrl.includes('images.unsplash.com') ||
+                    project.thumbnailUrl === project.posterUrl ||
+                    !project.thumbnailUrl ||
+                    project.thumbnailUrl.includes('images.unsplash.com'))
+                    ? project.posterUrl
+                    : project.thumbnailUrl
+                }
                 playsInline
                 muted={isMuted}
                 loop

@@ -123,9 +123,10 @@
     /* Translucent information overlay floating directly over the LP vinyl disc */
     .selection {
       position: absolute;
-      top: 42%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+      transform: translate3d(50vw, 42vh, 0) translate(-50%, -50%);
+      will-change: transform;
       z-index: 12;
       width: max-content;
       max-width: min(360px, 80vw);
@@ -134,10 +135,10 @@
       align-items: center;
       text-align: center;
       gap: 5px;
-      padding: 12px 22px;
+      padding: 12px 24px;
       background: rgba(247, 246, 242, 0.78);
-      backdrop-filter: blur(16px) saturate(160%);
-      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
       border: 1px solid rgba(25, 25, 25, 0.14);
       border-radius: 999px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -145,14 +146,13 @@
       cursor: pointer;
       user-select: none;
       touch-action: none;
-      transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 150ms ease;
+      transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
     }
 
     .selection:hover {
       background: rgba(247, 246, 242, 0.94);
       border-color: rgba(165, 43, 37, 0.45);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
-      transform: translate(-50%, calc(-50% - 2px));
     }
 
     .selection__category {
@@ -631,14 +631,35 @@
     const raycaster = new THREE.Raycaster();
     const shelfCameraPosition = new THREE.Vector3();
     const shelfCameraTarget = new THREE.Vector3();
+    const _lpPos = new THREE.Vector3();
+    let lastProjectsSignature = "";
 
     // Responsive spacing based on count
     let spacing = 2.4;
     const shelfBoardTop = 0.45;
 
-    // Texture cache
+    // Texture cache & animated GIF covers
     const textureLoader = new THREE.TextureLoader();
     const textureCache = new Map();
+    const animatedCovers = [];
+    let gifContainer = null;
+
+    function getGifContainer() {
+      if (!gifContainer) {
+        gifContainer = document.createElement("div");
+        gifContainer.setAttribute("aria-hidden", "true");
+        gifContainer.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:0.001;pointer-events:none;overflow:hidden;z-index:-1;";
+        document.body.appendChild(gifContainer);
+      }
+      return gifContainer;
+    }
+
+    function cleanupAnimatedCovers() {
+      while (animatedCovers.length) {
+        const entry = animatedCovers.pop();
+        try { entry.cleanup(); } catch {}
+      }
+    }
 
     function configureResponsive() {
       viewWidth = window.innerWidth;
@@ -787,7 +808,215 @@
       return tex;
     }
 
-    // Load Project Cover Texture with fallback
+    function drawCoverFrame(ctx, source, srcWidth, srcHeight, pos, targetSize = 1024) {
+      if (!srcWidth || !srcHeight) return;
+      const scale = (pos && pos.scale) || 1;
+      const sw = srcWidth / scale;
+      const sh = srcHeight / scale;
+      const minDim = Math.min(sw, sh);
+
+      const cropW = minDim;
+      const cropH = minDim;
+      const offsetX = ((srcWidth - cropW) * ((pos && pos.x) ?? 50)) / 100;
+      const offsetY = ((srcHeight - cropH) * ((pos && pos.y) ?? 50)) / 100;
+
+      ctx.fillStyle = "#141312";
+      ctx.fillRect(0, 0, targetSize, targetSize);
+      ctx.drawImage(source, Math.max(0, offsetX), Math.max(0, offsetY), cropW, cropH, 0, 0, targetSize, targetSize);
+    }
+
+    function isGifUrl(url) {
+      return typeof url === "string" && (url.startsWith("data:image/gif") || /\.gif(\?.*)?$/i.test(url));
+    }
+
+    let gifuctPromise = null;
+    function getGifuct() {
+      if (!gifuctPromise) {
+        gifuctPromise = import("https://cdn.jsdelivr.net/npm/gifuct-js@2.1.2/+esm");
+      }
+      return gifuctPromise;
+    }
+
+    function dataUrlToArrayBuffer(dataUrl) {
+      const commaIdx = dataUrl.indexOf(",");
+      const base64 = commaIdx >= 0 ? dataUrl.slice(commaIdx + 1) : dataUrl;
+      const binary = atob(base64);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    function loadAnimatedGifCover(url, project, index, callback) {
+      const TEX_SIZE = 512;
+      const c = document.createElement("canvas");
+      c.width = TEX_SIZE;
+      c.height = TEX_SIZE;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#141312";
+      ctx.fillRect(0, 0, TEX_SIZE, TEX_SIZE);
+
+      const pos = project.lpCoverPosition || { x: 50, y: 50, scale: 1 };
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 4;
+
+      // Attach texture immediately so sleeve is never blank white while decoding
+      callback(tex);
+
+      let disposed = false;
+      let timerId = 0;
+      let fallbackImg = null;
+      let useDomFallback = false;
+
+      const entry = {
+        isDomFallback: () => useDomFallback,
+        tick: () => {
+          if (disposed || !useDomFallback || !fallbackImg || !fallbackImg.complete || !fallbackImg.naturalWidth) return;
+          try {
+            drawCoverFrame(ctx, fallbackImg, fallbackImg.naturalWidth, fallbackImg.naturalHeight, pos, TEX_SIZE);
+            tex.needsUpdate = true;
+          } catch {}
+        },
+        cleanup: () => {
+          disposed = true;
+          if (timerId) clearTimeout(timerId);
+          if (fallbackImg && fallbackImg.parentNode) {
+            fallbackImg.parentNode.removeChild(fallbackImg);
+          }
+        }
+      };
+      animatedCovers.push(entry);
+
+      const startDomFallback = () => {
+        if (disposed) return;
+        const img = new Image();
+        if (!url.startsWith("data:") && !url.startsWith("blob:")) {
+          img.crossOrigin = "anonymous";
+        }
+        img.onload = () => {
+          if (disposed) return;
+          fallbackImg = img;
+          useDomFallback = true;
+          getGifContainer().appendChild(img);
+          try {
+            drawCoverFrame(ctx, img, img.naturalWidth || img.width, img.naturalHeight || img.height, pos, TEX_SIZE);
+            tex.needsUpdate = true;
+            requestFrame();
+          } catch (e) {
+            callback(createDefaultCoverTexture(project, index));
+          }
+        };
+        img.onerror = () => {
+          if (disposed) return;
+          callback(createDefaultCoverTexture(project, index));
+        };
+        img.src = url;
+      };
+
+      (async () => {
+        try {
+          let buffer;
+          if (url.startsWith("data:")) {
+            buffer = dataUrlToArrayBuffer(url);
+          } else {
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error("Fetch failed");
+            buffer = await resp.arrayBuffer();
+          }
+          if (disposed) return;
+
+          const { parseGIF, decompressFrames } = await getGifuct();
+          if (disposed) return;
+
+          const gif = parseGIF(buffer);
+          const frames = decompressFrames(gif, true);
+          if (!frames || !frames.length) throw new Error("No GIF frames");
+
+          const gifW = (gif.lsd && gif.lsd.width) || frames[0].dims.width;
+          const gifH = (gif.lsd && gif.lsd.height) || frames[0].dims.height;
+
+          const compCanvas = document.createElement("canvas");
+          compCanvas.width = gifW;
+          compCanvas.height = gifH;
+          const compCtx = compCanvas.getContext("2d");
+
+          const patchCanvas = document.createElement("canvas");
+          const patchCtx = patchCanvas.getContext("2d");
+
+          // Pre-cache composited frames on first pass for zero-allocation playback
+          const cachedFrames = new Array(frames.length);
+          let frameIdx = 0;
+          let savedRestore = null;
+
+          const renderStep = () => {
+            if (disposed) return;
+
+            const frame = frames[frameIdx];
+            if (cachedFrames[frameIdx]) {
+              ctx.drawImage(cachedFrames[frameIdx], 0, 0);
+            } else {
+              if (frameIdx === 0) {
+                compCtx.clearRect(0, 0, gifW, gifH);
+              }
+              const { left, top, width, height } = frame.dims;
+
+              if (frame.disposalType === 3) {
+                savedRestore = compCtx.getImageData(0, 0, gifW, gifH);
+              } else {
+                savedRestore = null;
+              }
+
+              if (width > 0 && height > 0 && frame.patch) {
+                patchCanvas.width = width;
+                patchCanvas.height = height;
+                const imgData = new ImageData(new Uint8ClampedArray(frame.patch), width, height);
+                patchCtx.putImageData(imgData, 0, 0);
+                compCtx.drawImage(patchCanvas, left, top);
+              }
+
+              drawCoverFrame(ctx, compCanvas, gifW, gifH, pos, TEX_SIZE);
+
+              // Snapshot the 512x512 composited frame for fast subsequent loops
+              const snap = document.createElement("canvas");
+              snap.width = TEX_SIZE;
+              snap.height = TEX_SIZE;
+              snap.getContext("2d").drawImage(c, 0, 0);
+              cachedFrames[frameIdx] = snap;
+
+              if (frame.disposalType === 2) {
+                compCtx.clearRect(left, top, width, height);
+              } else if (frame.disposalType === 3 && savedRestore) {
+                compCtx.putImageData(savedRestore, 0, 0);
+              }
+            }
+
+            tex.needsUpdate = true;
+            requestFrame();
+
+            const delayMs = frame.delay && frame.delay >= 30 ? frame.delay : 100;
+
+            if (frames.length > 1) {
+              timerId = setTimeout(() => {
+                if (disposed) return;
+                frameIdx = (frameIdx + 1) % frames.length;
+                renderStep();
+              }, delayMs);
+            }
+          };
+
+          renderStep();
+        } catch (err) {
+          console.warn("gifuct-js decode failed, using DOM fallback:", err);
+          startDomFallback();
+        }
+      })();
+    }
+
+    // Load Project Cover Texture with fallback (supports animated GIFs)
     function loadProjectCover(project, index, callback) {
       const url = project.lpCoverUrl || project.thumbnailUrl;
       if (!url) {
@@ -795,50 +1024,40 @@
         return;
       }
 
-      if (textureCache.has(url)) {
-        callback(textureCache.get(url));
+      if (isGifUrl(url)) {
+        loadAnimatedGifCover(url, project, index, callback);
+        return;
+      }
+
+      const pos = project.lpCoverPosition || { x: 50, y: 50, scale: 1 };
+      const cacheKey = `${url}|${pos.x ?? 50}|${pos.y ?? 50}|${pos.scale ?? 1}`;
+
+      if (textureCache.has(cacheKey)) {
+        callback(textureCache.get(cacheKey));
         return;
       }
 
       const img = new Image();
-      img.crossOrigin = "anonymous";
+      if (!url.startsWith("data:") && !url.startsWith("blob:")) {
+        img.crossOrigin = "anonymous";
+      }
       img.onload = () => {
         const c = document.createElement("canvas");
         c.width = 1024;
         c.height = 1024;
         const ctx = c.getContext("2d");
 
-        // Center square crop
-        const pos = project.lpCoverPosition || { x: 50, y: 50, scale: 1 };
-        const scale = pos.scale || 1;
-        const sw = img.width / scale;
-        const sh = img.height / scale;
-        const minDim = Math.min(sw, sh);
-
-        const cropW = minDim;
-        const cropH = minDim;
-        const offsetX = ((img.width - cropW) * (pos.x || 50)) / 100;
-        const offsetY = ((img.height - cropH) * (pos.y || 50)) / 100;
-
-        ctx.drawImage(img, Math.max(0, offsetX), Math.max(0, offsetY), cropW, cropH, 0, 0, 1024, 1024);
-
-        // Soft printed paperboard sheen
-        const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
-        grad.addColorStop(0, "rgba(255,255,255,0.06)");
-        grad.addColorStop(0.5, "rgba(0,0,0,0)");
-        grad.addColorStop(1, "rgba(0,0,0,0.14)");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 1024, 1024);
+        drawCoverFrame(ctx, img, img.width, img.height, pos);
 
         const tex = new THREE.CanvasTexture(c);
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.anisotropy = 8;
-        textureCache.set(url, tex);
+        textureCache.set(cacheKey, tex);
         callback(tex);
       };
       img.onerror = () => {
         const fallbackTex = createDefaultCoverTexture(project, index);
-        textureCache.set(url, fallbackTex);
+        textureCache.set(cacheKey, fallbackTex);
         callback(fallbackTex);
       };
       img.src = url;
@@ -860,13 +1079,10 @@
       const sleeveHeight = 1.82;
       const sleeveDepth = 0.036;
 
-      // Sleeve Front Material (Paperboard matte)
-      const sleeveFrontMat = new THREE.MeshPhysicalMaterial({
+      // Sleeve Front Material (Vivid true-to-original artwork without washed-out haze)
+      const sleeveFrontMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        roughness: 0.88,
-        metalness: 0.03,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.8
+        toneMapped: false
       });
 
       // Default back & edge material
@@ -880,6 +1096,7 @@
       loadProjectCover(project, index, (tex) => {
         sleeveFrontMat.map = tex;
         sleeveFrontMat.needsUpdate = true;
+        requestFrame();
       });
 
       const sleeveGeom = new RoundedBoxGeometry(sleeveWidth, sleeveHeight, sleeveDepth, 4, 0.008);
@@ -1057,7 +1274,7 @@
       const key = new THREE.DirectionalLight(0xFFFBF4, 1.8);
       key.position.set(-5, 9, 7);
       key.castShadow = true;
-      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.mapSize.set(1024, 1024);
       key.shadow.camera.left = -10;
       key.shadow.camera.right = 10;
       key.shadow.camera.top = 7;
@@ -1291,25 +1508,27 @@
         rig.motion.rotation.x = damp(rig.motion.rotation.x, hoverPitch, 10, delta);
         rig.motion.rotation.y = damp(rig.motion.rotation.y, hoverYaw, 10, delta);
 
-        // Distance opacity fade
-        const fadeProgress = clamp((distance - 2.8) / 0.8, 0, 1);
-        const opacity = 1 - smoothstep(fadeProgress);
-        rig.shadowMesh.material.opacity = opacity * 0.35;
-        rig.hit.visible = opacity > 0.15;
+        // Distance opacity fade & offscreen culling
+        const isOffscreen = distance > 4.2;
+        rig.root.visible = !isOffscreen;
+        if (!isOffscreen) {
+          const fadeProgress = clamp((distance - 2.8) / 0.8, 0, 1);
+          const opacity = 1 - smoothstep(fadeProgress);
+          rig.shadowMesh.material.opacity = opacity * 0.35;
+          rig.hit.visible = opacity > 0.15;
+        }
       });
 
-      // Attach the translucent title/subtitle badge hitbox directly onto the active LP record
+      // Attach the translucent title/subtitle badge hitbox directly onto the active LP record using GPU transform
       if (selectionCard && vinylRigs.length && vinylRigs[selectedIndex]) {
         const activeRig = vinylRigs[selectedIndex];
-        const lpPos = new THREE.Vector3();
-        activeRig.motion.getWorldPosition(lpPos);
-        lpPos.x += 0.35;
-        lpPos.y += 0.05;
-        lpPos.project(camera);
-        const px = ((lpPos.x + 1) / 2) * viewWidth;
-        const py = ((-lpPos.y + 1) / 2) * viewHeight;
-        selectionCard.style.left = `${px.toFixed(1)}px`;
-        selectionCard.style.top = `${py.toFixed(1)}px`;
+        activeRig.motion.getWorldPosition(_lpPos);
+        _lpPos.x += 0.35;
+        _lpPos.y += 0.05;
+        _lpPos.project(camera);
+        const px = ((_lpPos.x + 1) / 2) * viewWidth;
+        const py = ((-_lpPos.y + 1) / 2) * viewHeight;
+        selectionCard.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0) translate(-50%, -50%)`;
       }
     }
 
@@ -1325,11 +1544,16 @@
       const elapsed = time / 1000;
       lastTime = time;
 
+      for (let i = 0; i < animatedCovers.length; i++) {
+        animatedCovers[i].tick();
+      }
+
       updateShelfLayout(delta, elapsed);
       renderer.render(scene, camera);
 
       const moving = Math.abs(position - targetPosition) > 0.0005 || isDraggingPointer || wheelIdle > 0;
-      if (!suspended && (moving || hoveredIndex >= 0)) {
+      const hasDomGif = animatedCovers.some(c => c.isDomFallback && c.isDomFallback());
+      if (!suspended && (moving || hoveredIndex >= 0 || hasDomGif)) {
         requestFrame();
       }
     }
@@ -1337,7 +1561,7 @@
     function resize() {
       configureResponsive();
       renderer.setSize(viewWidth, viewHeight, false);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, viewWidth < 768 ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
       camera.aspect = viewWidth / viewHeight;
       camera.updateProjectionMatrix();
       requestFrame();
@@ -1363,9 +1587,31 @@
       });
     }
 
+    function getProjectsSignature(list) {
+      return list.map(p => [
+        p.id,
+        p.slug,
+        p.title,
+        p.category,
+        p.shortDescription,
+        p.lpCoverUrl || p.thumbnailUrl,
+        p.lpCoverPosition?.x,
+        p.lpCoverPosition?.y,
+        p.lpCoverPosition?.scale,
+        p.centerLabelText,
+        p.displayOrder
+      ].join("|")).join("::");
+    }
+
     function rebuildSceneWithProjects(newProjects) {
       if (!Array.isArray(newProjects) || !newProjects.length) return;
-      PROJECTS = newProjects.slice(0, 15);
+      const sliced = newProjects.slice(0, 15);
+      const sig = getProjectsSignature(sliced);
+      if (sig === lastProjectsSignature) return;
+      lastProjectsSignature = sig;
+      PROJECTS = sliced;
+
+      cleanupAnimatedCovers();
 
       // Clean existing rigs
       vinylRigs.forEach(rig => {
@@ -1396,6 +1642,20 @@
       } else if (data.type === "SUTIDEO_SELECT_SLUG" && data.slug) {
         const found = PROJECTS.findIndex(p => p.slug === data.slug);
         if (found >= 0) selectProjectIndex(found);
+      } else if (data.type === "SUTIDEO_SET_SUSPENDED") {
+        const nextSuspended = Boolean(data.suspended);
+        if (nextSuspended === suspended) return;
+        suspended = nextSuspended;
+        if (suspended) {
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        } else {
+          lastTime = performance.now();
+          resize();
+          requestFrame();
+        }
       }
     });
 
@@ -1418,7 +1678,7 @@
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.0;
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.setClearColor(0xF7F6F2, 1);
 
       scene = new THREE.Scene();

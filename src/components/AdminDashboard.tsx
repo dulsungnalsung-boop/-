@@ -113,7 +113,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onUpdateProjects(updated);
     setSelectedProjectId(newProj.id);
     setProjectForm(newProj);
-    setCurrentTab('portfolio');
+    setCurrentTab('dashboard');
   };
 
   const handleDeleteProject = (id: string) => {
@@ -186,51 +186,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               onClick={() => { setCurrentTab('dashboard'); setProjectForm(null); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
-                currentTab === 'dashboard' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
+                currentTab === 'dashboard' || currentTab === 'lp_editor' || currentTab === 'detail_editor'
+                  ? 'bg-[#A52B25] text-white font-semibold'
+                  : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
               <span>DASHBOARD</span>
-            </button>
-
-            <button
-              onClick={() => { setCurrentTab('portfolio'); setProjectForm(null); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
-                currentTab === 'portfolio' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <FolderKanban className="w-4 h-4" />
-              <span>PORTFOLIO (15 LP)</span>
-            </button>
-
-            <button
-              onClick={() => { setCurrentTab('lp_editor'); setProjectForm(null); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
-                currentTab === 'lp_editor' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <Disc className="w-4 h-4" />
-              <span>ALBUM COVER EDITOR</span>
-            </button>
-
-            <button
-              onClick={() => { setCurrentTab('detail_editor'); setProjectForm(null); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
-                currentTab === 'detail_editor' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <FileEdit className="w-4 h-4" />
-              <span>PROJECT STORY CMS</span>
-            </button>
-
-            <button
-              onClick={() => { setCurrentTab('showreel'); setProjectForm(null); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
-                currentTab === 'showreel' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <Film className="w-4 h-4" />
-              <span>SHOWREEL FILM</span>
             </button>
 
             <button
@@ -240,7 +202,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               }`}
             >
               <Settings className="w-4 h-4" />
-              <span>WEBSITE SETTINGS</span>
+              <span>WEBSITE BRAND SETTINGS</span>
+            </button>
+
+            <button
+              onClick={() => { setCurrentTab('showreel'); setProjectForm(null); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-mono-sub uppercase tracking-wider transition-colors ${
+                currentTab === 'showreel' ? 'bg-[#A52B25] text-white font-semibold' : 'text-[#AAAAAA] hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <Film className="w-4 h-4" />
+              <span>SHOWREEL VIDEO MANAGEMENT</span>
             </button>
           </nav>
         </div>
@@ -261,7 +233,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Project Selector bar when in LP or Detail Editor */}
         {(currentTab === 'lp_editor' || currentTab === 'detail_editor') && (
           <div className="mb-6 p-4 bg-white border border-[#DDDAD3] flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => setCurrentTab('dashboard')}
+                className="px-3 py-1.5 border border-[#DDDAD3] hover:border-[#191919] text-xs font-mono-sub uppercase tracking-wider text-[#191919] transition-colors"
+              >
+                ← DASHBOARD
+              </button>
               <span className="text-xs uppercase font-mono-sub text-[#777777]">ACTIVE TARGET LP:</span>
               <select
                 value={selectedProjectId}
@@ -338,6 +316,139 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
+            {/* Inline Project Metadata Form when creating/editing from Dashboard */}
+            {projectForm && (
+              <div className="bg-white border border-[#DDDAD3] p-6 md:p-8 space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-[#DDDAD3]">
+                  <h3 className="font-editorial text-xl font-normal">
+                    Edit Project Metadata: {projectForm.title}
+                  </h3>
+                  <button
+                    onClick={() => setProjectForm(null)}
+                    className="text-xs font-mono-sub uppercase text-[#777777] hover:text-[#191919]"
+                  >
+                    CLOSE
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                      Project Title
+                    </label>
+                    <input
+                      type="text"
+                      value={projectForm.title || ''}
+                      onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm font-editorial"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                      Project Slug (Unique Route URL)
+                    </label>
+                    <input
+                      type="text"
+                      value={projectForm.slug || ''}
+                      onChange={(e) => setProjectForm({ ...projectForm, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                      className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm font-mono-sub"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                      Category
+                    </label>
+                    <input
+                      type="text"
+                      value={projectForm.category || ''}
+                      onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm font-mono-sub"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                      Production Year
+                    </label>
+                    <input
+                      type="text"
+                      value={projectForm.year || ''}
+                      onChange={(e) => setProjectForm({ ...projectForm, year: e.target.value })}
+                      className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm font-mono-sub"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                    Short Description (For 3D Ledge Card)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={projectForm.shortDescription || ''}
+                    onChange={(e) => setProjectForm({ ...projectForm, shortDescription: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+                    Creative Direction & Introduction (Project Top)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={projectForm.introduction || ''}
+                    onChange={(e) => setProjectForm({ ...projectForm, introduction: e.target.value })}
+                    className="w-full px-3 py-2 bg-[#F7F6F2] border border-[#DDDAD3] text-sm font-editorial"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#DDDAD3]">
+                  <MediaUploader
+                    label="LP Cover Artwork (GIF / JPG / PNG)"
+                    accept="image"
+                    currentUrl={projectForm.lpCoverUrl}
+                    onUploadComplete={(url) => setProjectForm({ ...projectForm, lpCoverUrl: url })}
+                    aspectRatio="1:1"
+                  />
+
+                  <MediaUploader
+                    label="Primary 16:9 Thumbnail Image"
+                    accept="image"
+                    currentUrl={projectForm.thumbnailUrl}
+                    onUploadComplete={(url) => setProjectForm({ ...projectForm, thumbnailUrl: url, posterUrl: url })}
+                    aspectRatio="16:9"
+                  />
+
+                  <MediaUploader
+                    label="Main Cinematic 4K Video (MP4 / WebM)"
+                    accept="video"
+                    currentUrl={projectForm.mainVideoUrl}
+                    onUploadComplete={(url) => setProjectForm({ ...projectForm, mainVideoUrl: url })}
+                    aspectRatio="16:9"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-[#DDDAD3]">
+                  <button
+                    onClick={() => setProjectForm(null)}
+                    className="px-4 py-2 border border-[#DDDAD3] text-xs font-mono-sub"
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    onClick={handleSaveProjectForm}
+                    className="px-6 py-2 bg-[#191919] hover:bg-[#A52B25] text-white text-xs font-mono-sub font-semibold uppercase flex items-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    SAVE PROJECT DETAILS
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Live Collection Grid */}
             <div className="bg-white border border-[#DDDAD3] p-6 space-y-6">
               <h3 className="font-editorial text-xl font-normal text-[#191919]">
@@ -345,47 +456,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {projects.map((proj, idx) => (
+                {projects.map((proj) => (
                   <div
                     key={proj.id}
-                    className="border border-[#DDDAD3] p-3 bg-[#F7F6F2] hover:border-[#191919] transition-all group relative"
+                    className="border border-[#DDDAD3] p-3 bg-[#F7F6F2] hover:border-[#191919] transition-all group relative flex flex-col justify-between"
                   >
-                    <div className="aspect-square bg-black overflow-hidden mb-2 relative">
-                      <img
-                        src={proj.lpCoverUrl || proj.thumbnailUrl}
-                        alt={proj.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-1.5 left-1.5 bg-black/80 text-white text-[9px] font-mono-sub px-1.5 py-0.5">
-                        LP {proj.projectNumber}
-                      </span>
+                    <div>
+                      <div className="aspect-square bg-black overflow-hidden mb-2 relative">
+                        <img
+                          src={proj.lpCoverUrl || proj.thumbnailUrl}
+                          alt={proj.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-1.5 left-1.5 bg-black/80 text-white text-[9px] font-mono-sub px-1.5 py-0.5">
+                          LP {proj.projectNumber}
+                        </span>
+                        <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
+                          <button
+                            onClick={() => handleTogglePublish(proj.id)}
+                            title={proj.isPublished ? '공개 중 (클릭 시 비공개)' : '비공개 (클릭 시 공개)'}
+                            className={`px-1.5 py-0.5 text-[9px] font-mono-sub uppercase ${
+                              proj.isPublished ? 'bg-emerald-700/90 text-white' : 'bg-stone-700/90 text-stone-200'
+                            }`}
+                          >
+                            {proj.isPublished ? 'ON' : 'OFF'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProject(proj.id)}
+                            title="프로젝트 삭제"
+                            className="p-1 bg-black/70 hover:bg-red-600 text-white transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <h4 className="font-editorial text-sm truncate font-medium text-[#191919]">
+                        {proj.title}
+                      </h4>
+                      <p className="text-[10px] text-[#777777] font-mono-sub uppercase truncate">
+                        {proj.category}
+                      </p>
                     </div>
 
-                    <h4 className="font-editorial text-sm truncate font-medium text-[#191919]">
-                      {proj.title}
-                    </h4>
-                    <p className="text-[10px] text-[#777777] font-mono-sub uppercase truncate">
-                      {proj.category}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#DDDAD3] text-xs">
+                    <div className="grid grid-cols-2 gap-1.5 mt-3 pt-2.5 border-t border-[#DDDAD3]">
                       <button
                         onClick={() => {
                           setSelectedProjectId(proj.id);
                           setCurrentTab('lp_editor');
                         }}
-                        className="text-[10px] font-mono-sub uppercase text-[#A52B25] hover:underline"
+                        className="flex items-center justify-center gap-1 px-2 py-1.5 bg-[#A52B25] hover:bg-[#8E231E] text-white text-[10px] font-semibold transition-colors"
                       >
-                        EDIT LP
+                        <Disc className="w-3 h-3 shrink-0" />
+                        <span>앨범 커버 수정</span>
                       </button>
                       <button
                         onClick={() => {
                           setSelectedProjectId(proj.id);
                           setCurrentTab('detail_editor');
                         }}
-                        className="text-[10px] font-mono-sub uppercase text-[#191919] hover:underline"
+                        className="flex items-center justify-center gap-1 px-2 py-1.5 bg-[#191919] hover:bg-[#333333] text-white text-[10px] font-semibold transition-colors"
                       >
-                        STORY
+                        <FileEdit className="w-3 h-3 shrink-0" />
+                        <span>글 수정</span>
                       </button>
                     </div>
                   </div>
@@ -507,7 +640,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#DDDAD3]">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#DDDAD3]">
+                  <MediaUploader
+                    label="LP Cover Artwork (GIF / JPG / PNG)"
+                    accept="image"
+                    currentUrl={projectForm.lpCoverUrl}
+                    onUploadComplete={(url) => setProjectForm({ ...projectForm, lpCoverUrl: url })}
+                    aspectRatio="1:1"
+                  />
+
                   <MediaUploader
                     label="Primary 16:9 Thumbnail Image"
                     accept="image"
@@ -664,6 +805,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* TAB 3: ALBUM COVER EDITOR */}
         {currentTab === 'lp_editor' && activeProject && (
           <AlbumCoverEditor
+            key={activeProject.id}
             project={activeProject}
             onSave={(updated) => {
               const next = projects.map(p => p.id === updated.id ? updated : p);
@@ -677,6 +819,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* TAB 4: PROJECT DETAIL BUILDER */}
         {currentTab === 'detail_editor' && activeProject && (
           <ProjectDetailEditor
+            key={activeProject.id}
             project={activeProject}
             onSave={(updated) => {
               const next = projects.map(p => p.id === updated.id ? updated : p);

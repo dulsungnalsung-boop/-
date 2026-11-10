@@ -29,6 +29,22 @@ export const ProjectDetailEditor: React.FC<ProjectDetailEditorProps> = ({
   onSave,
   onCancel
 }) => {
+  const [title, setTitle] = useState(project.title);
+  const [category, setCategory] = useState(project.category);
+  const [year, setYear] = useState(project.year);
+  const [shortDescription, setShortDescription] = useState(project.shortDescription);
+  const [introduction, setIntroduction] = useState(project.introduction);
+  const [mainVideoUrl, setMainVideoUrl] = useState(project.mainVideoUrl);
+  const initialPoster =
+    project.posterUrl &&
+    (!project.posterUrl.includes('images.unsplash.com') ||
+      project.thumbnailUrl === project.posterUrl ||
+      !project.thumbnailUrl ||
+      project.thumbnailUrl.includes('images.unsplash.com'))
+      ? project.posterUrl
+      : project.thumbnailUrl;
+  const [posterUrl, setPosterUrl] = useState(initialPoster || project.thumbnailUrl || '');
+
   const [blocks, setBlocks] = useState<ContentBlock[]>(project.contentBlocks || []);
   const [editingCaptionId, setEditingCaptionId] = useState<string | null>(null);
   const [tempCaption, setTempCaption] = useState('');
@@ -80,6 +96,14 @@ export const ProjectDetailEditor: React.FC<ProjectDetailEditorProps> = ({
   const handleSave = () => {
     onSave({
       ...project,
+      title,
+      category,
+      year,
+      shortDescription,
+      introduction,
+      mainVideoUrl,
+      posterUrl,
+      thumbnailUrl: posterUrl || project.thumbnailUrl,
       contentBlocks: blocks.map((b, i) => ({ ...b, sortOrder: i + 1 })),
       updatedAt: new Date().toISOString()
     });
@@ -113,6 +137,91 @@ export const ProjectDetailEditor: React.FC<ProjectDetailEditorProps> = ({
             <Check className="w-4 h-4" />
             SAVE DETAIL PAGE
           </button>
+        </div>
+      </div>
+
+      {/* Project Info & Main Video / Thumbnail */}
+      <div className="p-5 bg-[#F7F6F2] border border-[#DDDAD3] space-y-5">
+        <span className="text-[10px] uppercase tracking-widest font-mono-sub text-[#A52B25] block">
+          PROJECT HEADER &amp; MAIN VIDEO THUMBNAIL
+        </span>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+              Project Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-[#DDDAD3] text-sm font-editorial"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+              Category
+            </label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-[#DDDAD3] text-sm font-mono-sub"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+              Year
+            </label>
+            <input
+              type="text"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-[#DDDAD3] text-sm font-mono-sub"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+              Short Description (LP Subtitle &amp; Header)
+            </label>
+            <textarea
+              rows={2}
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-[#DDDAD3] text-sm"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] font-mono-sub uppercase text-[#555555] block mb-1">
+              Creative Direction &amp; Introduction
+            </label>
+            <textarea
+              rows={2}
+              value={introduction}
+              onChange={(e) => setIntroduction(e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-[#DDDAD3] text-sm font-editorial"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-[#DDDAD3]">
+          <MediaUploader
+            label="Main Video Thumbnail / Poster (16:9)"
+            accept="image"
+            currentUrl={posterUrl}
+            onUploadComplete={(url) => setPosterUrl(url)}
+            aspectRatio="16:9"
+          />
+          <MediaUploader
+            label="Main Cinematic 4K Video (MP4 / WebM)"
+            accept="video"
+            currentUrl={mainVideoUrl}
+            onUploadComplete={(url) => setMainVideoUrl(url)}
+            aspectRatio="16:9"
+          />
         </div>
       </div>
 

@@ -7,12 +7,14 @@ export interface VinylCollectionProps {
   projects: Project[];
   onSelectProject: (slug: string) => void;
   selectedSlug?: string;
+  isSuspended?: boolean;
 }
 
 export const SutideoVinylShelf: React.FC<VinylCollectionProps> = ({
   projects,
   onSelectProject,
-  selectedSlug
+  selectedSlug,
+  isSuspended = false
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -29,6 +31,10 @@ export const SutideoVinylShelf: React.FC<VinylCollectionProps> = ({
           type: 'SUTIDEO_UPDATE_PROJECTS',
           projects: publishedProjects
         }, '*');
+        iframeRef.current?.contentWindow?.postMessage({
+          type: 'SUTIDEO_SET_SUSPENDED',
+          suspended: isSuspended
+        }, '*');
       } else if (event.data.type === 'SUTIDEO_OPEN_PROJECT') {
         const slug = event.data.slug;
         if (typeof slug === 'string' && slug.length > 0) {
@@ -43,7 +49,7 @@ export const SutideoVinylShelf: React.FC<VinylCollectionProps> = ({
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [projects, onSelectProject]);
+  }, [projects, onSelectProject, isSuspended]);
 
   // When projects change, push update to iframe
   useEffect(() => {
@@ -53,6 +59,14 @@ export const SutideoVinylShelf: React.FC<VinylCollectionProps> = ({
       projects: publishedProjects
     }, '*');
   }, [projects]);
+
+  // Suspend/resume 3D render loop when off-route
+  useEffect(() => {
+    iframeRef.current?.contentWindow?.postMessage({
+      type: 'SUTIDEO_SET_SUSPENDED',
+      suspended: isSuspended
+    }, '*');
+  }, [isSuspended]);
 
   // When selected slug changes from parent
   useEffect(() => {

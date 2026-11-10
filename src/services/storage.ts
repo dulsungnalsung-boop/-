@@ -111,18 +111,16 @@ export function saveShowreel(showreel: Showreel): void {
 
 export function checkIsAdminLoggedIn(): boolean {
   try {
-    const val = localStorage.getItem(STORAGE_KEYS.AUTH);
-    return val === 'authenticated_true';
+    localStorage.removeItem(STORAGE_KEYS.AUTH);
   } catch {
-    return false;
+    // ignore storage errors
   }
+  return false;
 }
 
 export function setAdminLoggedIn(status: boolean): void {
   try {
-    if (status) {
-      localStorage.setItem(STORAGE_KEYS.AUTH, 'authenticated_true');
-    } else {
+    if (!status) {
       localStorage.removeItem(STORAGE_KEYS.AUTH);
     }
   } catch (err) {

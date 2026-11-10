@@ -160,53 +160,50 @@ export function App() {
     setIsShowreelMuted(!isShowreelMuted);
   };
 
-  // Render Admin Dashboard
-  if (activeRoute === 'admin' && isAdminLoggedIn) {
-    return (
-      <AdminDashboard
-        projects={projects}
-        settings={settings}
-        showreel={showreel}
-        onUpdateProjects={handleUpdateProjects}
-        onUpdateSettings={handleUpdateSettings}
-        onUpdateShowreel={handleUpdateShowreel}
-        onLogout={handleLogout}
-        onViewProjectOnSite={(slug) => {
-          handleOpenProject(slug);
-        }}
-      />
-    );
-  }
-
-  // Render Project Detail One-Page
-  if (activeRoute === 'project' && selectedProjectSlug) {
-    const currentProject = projects.find(p => p.slug === selectedProjectSlug);
-    if (currentProject) {
-      return (
-        <ProjectDetailPage
-          project={currentProject}
-          allProjects={projects}
-          onBackToPortfolio={handleBackToPortfolio}
-          onNavigateProject={handleOpenProject}
-        />
-      );
-    }
-  }
-
-  // Render Main Portfolio Website
   return (
-    <div className="w-screen h-screen bg-[#141312] text-[#191919] flex items-center justify-center p-0 md:p-3 overflow-hidden selection:bg-[#A52B25] selection:text-white select-none">
-      {/* 16:9 Aspect Ratio Cinematic Container */}
-      <div className="w-full aspect-video max-h-screen md:max-h-[calc(100vh-1.5rem)] max-w-[calc(100vh*16/9)] md:max-w-[calc((100vh-1.5rem)*16/9)] bg-[#F7F6F2] shadow-2xl relative flex flex-col justify-between overflow-hidden border border-[#DDDAD3]">
-        {/* Signature 3D Vinyl Exhibition Section (Interactive LP Banner & Project Navigation) */}
-        <section id="exhibition" className="relative w-full flex-1 min-h-0 bg-[#F7F6F2] overflow-hidden">
-          <div className="w-full h-full">
-            <SutideoVinylShelf
-              projects={projects}
-              onSelectProject={handleOpenProject}
-            />
-          </div>
-        </section>
+    <>
+      {activeRoute === 'admin' && isAdminLoggedIn && (
+        <AdminDashboard
+          projects={projects}
+          settings={settings}
+          showreel={showreel}
+          onUpdateProjects={handleUpdateProjects}
+          onUpdateSettings={handleUpdateSettings}
+          onUpdateShowreel={handleUpdateShowreel}
+          onLogout={handleLogout}
+          onViewProjectOnSite={(slug) => {
+            handleOpenProject(slug);
+          }}
+        />
+      )}
+
+      {activeRoute === 'project' && selectedProjectSlug && (() => {
+        const currentProject = projects.find(p => p.slug === selectedProjectSlug);
+        return currentProject ? (
+          <ProjectDetailPage
+            key={currentProject.id}
+            project={currentProject}
+            allProjects={projects}
+            onBackToPortfolio={handleBackToPortfolio}
+            onNavigateProject={handleOpenProject}
+          />
+        ) : null;
+      })()}
+
+      {/* Main Portfolio Website (kept mounted & suspended off-route for instant transitions) */}
+      <div className={activeRoute === 'home' ? 'w-screen h-screen bg-[#141312] text-[#191919] flex items-center justify-center p-0 md:p-3 overflow-hidden selection:bg-[#A52B25] selection:text-white select-none' : 'hidden'}>
+        {/* 16:9 Aspect Ratio Cinematic Container */}
+        <div className="w-full aspect-video max-h-screen md:max-h-[calc(100vh-1.5rem)] max-w-[calc(100vh*16/9)] md:max-w-[calc((100vh-1.5rem)*16/9)] bg-[#F7F6F2] shadow-2xl relative flex flex-col justify-between overflow-hidden border border-[#DDDAD3]">
+          {/* Signature 3D Vinyl Exhibition Section (Interactive LP Banner & Project Navigation) */}
+          <section id="exhibition" className="relative w-full flex-1 min-h-0 bg-[#F7F6F2] overflow-hidden">
+            <div className="w-full h-full">
+              <SutideoVinylShelf
+                projects={projects}
+                onSelectProject={handleOpenProject}
+                isSuspended={activeRoute !== 'home'}
+              />
+            </div>
+          </section>
 
         {/* Contact Info & Admin Access at Bottom: Email, Instagram, Location, and Admin */}
         <section id="contact" className="py-2.5 px-4 sm:px-8 md:px-10 bg-[#F7F6F2] border-t border-[#DDDAD3] shrink-0">
@@ -231,12 +228,17 @@ export function App() {
                   <span className="truncate">INSTAGRAM</span>
                 </span>
                 <a 
-                  href={settings.instagramUrl} 
+                  href={settings.instagramUrl === 'https://instagram.com/sutideosung' ? 'https://instagram.com/ddd_huck' : settings.instagramUrl} 
                   target="_blank" 
                   rel="noreferrer"
                   className="font-editorial text-xs sm:text-sm text-[#191919] hover:text-[#A52B25] transition-colors block truncate"
                 >
-                  @sutideosung
+                  {(() => {
+                    const url = settings.instagramUrl || '';
+                    if (!url || url.includes('sutideosung')) return '@ddd_huck';
+                    const cleaned = url.replace(/\/+$/, '').split('/').pop();
+                    return cleaned ? (cleaned.startsWith('@') ? cleaned : `@${cleaned}`) : '@ddd_huck';
+                  })()}
                 </a>
               </div>
 
@@ -279,7 +281,8 @@ export function App() {
         onClose={() => setIsLoginModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
-    </div>
+      </div>
+    </>
   );
 }
 
